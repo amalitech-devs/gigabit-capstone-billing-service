@@ -30,13 +30,14 @@ public class InternetTariffPlan {
 
     private double price;
 
-    private boolean vat;
-
+    private boolean isVatApplied;
+    private int vatPercentage;
+    private boolean isEnabled;
     private int downloadSpeed;
 
     private int uploadSpeed;
 
-    private boolean enabled;
+
 
     @Enumerated(EnumType.STRING)
     private ExpirationRate expiry;

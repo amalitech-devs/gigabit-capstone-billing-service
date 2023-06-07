@@ -13,14 +13,12 @@ public class InternetTariffPlanDto {
     private int dataSize;
 
     private double price;
-
-    private boolean vat;
-
+    private boolean isVatApplied;
+    private int vatPercentage;
+    private boolean isEnabled;
     private int downloadSpeed;
 
     private int uploadSpeed;
-
-    private boolean enabled;
 
     private ExpirationRate expiry;
 }
