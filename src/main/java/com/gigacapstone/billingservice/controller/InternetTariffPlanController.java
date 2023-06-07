@@ -15,13 +15,13 @@ import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 7200)
-@RequestMapping("/tariff-plans")
-public class TariffPlanController {
+@RequestMapping("api/v1/tariff/internet")
+public class InternetTariffPlanController {
 
     private final TariffPlanService tariffPlanService;
 
     @Autowired
-    public TariffPlanController(TariffPlanService tariffPlanService) {
+    public InternetTariffPlanController(TariffPlanService tariffPlanService) {
         this.tariffPlanService = tariffPlanService;
     }
 
