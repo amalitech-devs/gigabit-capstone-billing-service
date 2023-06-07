@@ -25,7 +25,6 @@ public class ModelMapper {
                 Object sourceValue = sourceField.get(source);
                 for (Field destinationField : destinationFields) {
                     destinationField.setAccessible(true);
-
                     if (sourceField.getName().equals(destinationField.getName())) {
                         destinationField.set(destination, sourceValue);
                         break;

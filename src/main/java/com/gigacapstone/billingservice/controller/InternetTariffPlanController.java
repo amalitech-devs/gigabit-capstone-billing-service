@@ -1,8 +1,9 @@
 package com.gigacapstone.billingservice.controller;
 
-import com.gigacapstone.billingservice.dto.TariffPlanDto;
+import com.gigacapstone.billingservice.dto.InternetTariffPlanDto;
+import com.gigacapstone.billingservice.model.InternetTariffPlan;
 import com.gigacapstone.billingservice.model.TariffPlan;
-import com.gigacapstone.billingservice.servce.TariffPlanService;
+import com.gigacapstone.billingservice.service.InternetTariffPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,28 +19,28 @@ import java.util.UUID;
 @RequestMapping("api/v1/tariff/internet")
 public class InternetTariffPlanController {
 
-    private final TariffPlanService tariffPlanService;
+    private final InternetTariffPlanService tariffPlanService;
 
     @Autowired
-    public InternetTariffPlanController(TariffPlanService tariffPlanService) {
+    public InternetTariffPlanController(InternetTariffPlanService tariffPlanService) {
         this.tariffPlanService = tariffPlanService;
     }
 
     @PostMapping
-    public ResponseEntity<TariffPlanDto> createTariffPlan(@RequestBody @Validated TariffPlanDto tariffPlanDto) {
-        TariffPlanDto createdTariffPlan = tariffPlanService.createTariffPlan(tariffPlanDto);
+    public ResponseEntity<InternetTariffPlanDto> createTariffPlan(@RequestBody @Validated InternetTariffPlanDto tariffPlanDto) {
+        InternetTariffPlanDto createdTariffPlan = tariffPlanService.createTariffPlan(tariffPlanDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTariffPlan);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TariffPlanDto> getTariffPlanById(@PathVariable("id") UUID id) {
-        TariffPlanDto tariffPlan = tariffPlanService.getTariffPlanById(id);
+    public ResponseEntity<InternetTariffPlanDto> getTariffPlanById(@PathVariable("id") UUID id) {
+        InternetTariffPlanDto tariffPlan = tariffPlanService.getTariffPlanById(id);
         return ResponseEntity.ok(tariffPlan);
     }
 
     @GetMapping
-    public ResponseEntity<Page<TariffPlan>> getAllTariffPlans(Pageable pageable) {
-        Page<TariffPlan> allTariffPlans = tariffPlanService.getAllTariffPlans(pageable);
+    public ResponseEntity<Page<InternetTariffPlan>> getAllTariffPlans(Pageable pageable) {
+        Page<InternetTariffPlan> allTariffPlans = tariffPlanService.getAllTariffPlans(pageable);
         return ResponseEntity.ok(allTariffPlans);
     }
 

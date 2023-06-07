@@ -1,13 +1,12 @@
 package com.gigacapstone.billingservice.dto;
 
-
-import com.gigacapstone.billingservice.constant.ExpiryDuration;
+import com.gigacapstone.billingservice.enums.ExpirationRate;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 
 @Data
-public class TariffPlanDto {
+public class InternetTariffPlanDto {
     @NotBlank
     private String name;
 
@@ -23,5 +22,5 @@ public class TariffPlanDto {
 
     private boolean enabled;
 
-    private ExpiryDuration expiry;
+    private ExpirationRate expiry;
 }
