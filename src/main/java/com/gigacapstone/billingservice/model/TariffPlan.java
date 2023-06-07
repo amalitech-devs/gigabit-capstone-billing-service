@@ -31,6 +31,8 @@ public class TariffPlan {
 
     @NotNull
     private Boolean isVatApplied;
+
+    @Positive
     private int vatPercentage;
 
     @Enumerated(EnumType.STRING)
