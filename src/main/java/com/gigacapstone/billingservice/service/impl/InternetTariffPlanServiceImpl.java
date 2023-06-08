@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class InternetTariffPlanServiceImpl implements InternetTariffPlanService {
@@ -29,25 +30,37 @@ public class InternetTariffPlanServiceImpl implements InternetTariffPlanService 
     @Override
     public InternetTariffPlanDto createTariffPlan(InternetTariffPlanDto tariffPlanDto) {
         InternetTariffPlan tariffPlan = tariffPlanMapper.mapToEntityOrDto(tariffPlanDto, InternetTariffPlan.class);
-        InternetTariffPlan savedTariffPlan = tariffPlanRepository.save(tariffPlan);
+        InternetTariffPlan savedTariffPlan = CompletableFuture.supplyAsync(()->
+                tariffPlanRepository
+                        .save(tariffPlan))
+                .join();
         return tariffPlanMapper.mapToEntityOrDto(savedTariffPlan, InternetTariffPlanDto.class);
     }
 
     @Override
     public InternetTariffPlanDto getTariffPlanById(UUID id) {
-        InternetTariffPlan tariffPlan = tariffPlanRepository.findById(id)
+        InternetTariffPlan tariffPlan = CompletableFuture.supplyAsync(()->
+                        tariffPlanRepository
+                                .findById(id))
+                .join()
                 .orElseThrow(() -> new NotFoundException("Internet tariff plan not found with ID: " + id));
         return tariffPlanMapper.mapToEntityOrDto(tariffPlan, InternetTariffPlanDto.class);
     }
 
     @Override
     public Page<InternetTariffPlan> getAllTariffPlans(Pageable pageable) {
-        return tariffPlanRepository.findAll(pageable);
+        return CompletableFuture.supplyAsync(()->
+                tariffPlanRepository
+                        .findAll(pageable))
+                .join();
     }
 
     @Override
     public void deleteTariffPlan(UUID id) {
-        InternetTariffPlan tariffPlan = tariffPlanRepository.findById(id)
+        InternetTariffPlan tariffPlan = CompletableFuture.supplyAsync(()
+                        ->tariffPlanRepository
+                        .findById(id))
+                .join()
                 .orElseThrow(() -> new NotFoundException("Internet tariff plan not found with ID: " + id));
         tariffPlanRepository.delete(tariffPlan);
     }
