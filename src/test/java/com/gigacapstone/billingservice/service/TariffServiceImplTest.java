@@ -32,7 +32,7 @@ class TariffServiceImplTest {
     @Test
     void testCreateVoicePackage_SuccessfulCreation() {
         // Create a sample VoicePackage object
-        VoicePackage voicePackage = new VoicePackage();
+        VoicePackageDTO voicePackage = new VoicePackageDTO();
         voicePackage.setName("Sample Package");
         voicePackage.setPrice(1);
 
@@ -40,47 +40,41 @@ class TariffServiceImplTest {
         when(tariffRepository.findTariffPlanByName(voicePackage.getName()))
                 .thenReturn(Optional.empty());
 
-        when(tariffRepository.save(voicePackage)).thenReturn(voicePackage);
-
         // Mock the behavior of the mapper
-        VoicePackageDTO expectedDto = new VoicePackageDTO("Sample Package", 1);
-        when(objectMapper.mapVoicePackageToVoicePackageDTO(voicePackage))
-                .thenReturn(expectedDto);
+        VoicePackage mappedVoicePackage = new VoicePackage();
+        when(objectMapper.mapVoicePackageDTOToVoicePackage(voicePackage))
+                .thenReturn(mappedVoicePackage);
 
         // Call the service method
         VoicePackageDTO resultDto = tariffService.createVoicePackage(voicePackage);
 
-        // Verify the repository method calls
+        // Verify that the repository and mapper methods are called as expected
         verify(tariffRepository, times(1)).findTariffPlanByName(voicePackage.getName());
-        verify(tariffRepository, times(1)).save(voicePackage);
-
-        // Verify the mapper method calls
-        verify(objectMapper, times(1)).mapVoicePackageToVoicePackageDTO(voicePackage);
+        verify(tariffRepository, times(1)).save(mappedVoicePackage);
+        verify(objectMapper, times(1)).mapVoicePackageDTOToVoicePackage(voicePackage);
 
         // Assert the result
         assertNotNull(resultDto);
-        assertEquals(expectedDto, resultDto);
+        assertEquals(voicePackage, resultDto);
     }
 
     @Test
     void testCreateVoicePackage_AlreadyExists() {
         // Create a sample VoicePackage object
-        VoicePackage voicePackage = new VoicePackage();
+        VoicePackageDTO voicePackage = new VoicePackageDTO();
         voicePackage.setName("Sample Package");
 
         // Mock the behavior of the repository to return a non-empty optional
         when(tariffRepository.findTariffPlanByName(voicePackage.getName()))
-                .thenReturn(Optional.of(voicePackage));
+                .thenReturn(Optional.of(new VoicePackage()));
 
         // Call the service method and assert that the expected exception is thrown
         assertThrows(EntityAlreadyExistException.class, () -> tariffService.createVoicePackage(voicePackage));
 
-        // Verify the repository method calls
+        // Verify that the repository and mapper methods are called as expected
         verify(tariffRepository, times(1)).findTariffPlanByName(voicePackage.getName());
-        verify(tariffRepository, never()).save(voicePackage);
-
-        // Verify the mapper method calls
-        verify(objectMapper, never()).mapVoicePackageToVoicePackageDTO(any());
+        verify(tariffRepository, never()).save(any());
+        verify(objectMapper, never()).mapVoicePackageDTOToVoicePackage(any());
 
     }
 
@@ -92,6 +86,5 @@ class TariffServiceImplTest {
         // Verify that the repository and mapper methods are not called
         verify(tariffRepository, never()).findTariffPlanByName(any());
         verify(tariffRepository, never()).save(any());
-        verify(objectMapper, never()).mapVoicePackageToVoicePackageDTO(any());
     }
 }
