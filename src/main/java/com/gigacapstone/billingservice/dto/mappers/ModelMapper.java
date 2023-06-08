@@ -12,31 +12,37 @@ public class ModelMapper {
     public <T, U> U mapToEntityOrDto(T source, Class<U> destinationClass) {
         U destination = null;
 
-        try {
 
-            Constructor<U> destinationConstructor = destinationClass.getDeclaredConstructor();
-            destination = destinationConstructor.newInstance();
+        if (source!= null && destinationClass!= null){
+            try {
 
-            Field[] sourceFields = source.getClass().getDeclaredFields();
-            Field[] destinationFields = destinationClass.getDeclaredFields();
+                Constructor<U> destinationConstructor = destinationClass.getDeclaredConstructor();
+                destination = destinationConstructor.newInstance();
 
-            for (Field sourceField : sourceFields) {
-                sourceField.setAccessible(true);
-                Object sourceValue = sourceField.get(source);
-                for (Field destinationField : destinationFields) {
-                    destinationField.setAccessible(true);
-                    if (sourceField.getName().equals(destinationField.getName())) {
-                        destinationField.set(destination, sourceValue);
-                        break;
+
+                Field[] sourceFields = source.getClass().getDeclaredFields();
+                Field[] destinationFields = destinationClass.getDeclaredFields();
+
+                for (Field sourceField : sourceFields) {
+                    sourceField.setAccessible(true);
+                    Object sourceValue = sourceField.get(source);
+                    for (Field destinationField : destinationFields) {
+                        destinationField.setAccessible(true);
+                        if (sourceField.getName().equals(destinationField.getName())) {
+                            destinationField.set(destination, sourceValue);
+                            break;
+                        }
                     }
                 }
+            } catch (NoSuchMethodException
+                     | IllegalAccessException
+                     | InstantiationException
+                     | InvocationTargetException ex) {
+                ex.printStackTrace();
             }
-        } catch (NoSuchMethodException
-                 | IllegalAccessException
-                 | InstantiationException
-                 | InvocationTargetException ex) {
-            ex.printStackTrace();
         }
+
+
         return destination;
     }
 }
