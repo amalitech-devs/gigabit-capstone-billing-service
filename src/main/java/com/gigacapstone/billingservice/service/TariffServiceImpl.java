@@ -17,6 +17,10 @@ public class TariffServiceImpl implements TariffService{
     private final Mapper objectMapper;
     @Override
     public VoicePackageDTO createVoicePackage(VoicePackage voicePackage) {
+        if(voicePackage == null){
+            throw new IllegalArgumentException("Input voice package cannot be null");
+        }
+
         if(doesPackageAlreadyExist(voicePackage)){
             throw new EntityAlreadyExistException("Package Name already exists");
         }
