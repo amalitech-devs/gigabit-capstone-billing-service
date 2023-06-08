@@ -1,5 +1,4 @@
 package com.gigacapstone.billingservice.model;
-
 import com.gigacapstone.billingservice.enums.ExpirationRate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
