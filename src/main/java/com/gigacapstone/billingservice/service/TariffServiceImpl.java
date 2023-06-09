@@ -23,6 +23,7 @@ public class TariffServiceImpl implements TariffService{
         if(doesPackageAlreadyExist(voicePackage.getName())){
             throw new EntityAlreadyExistException("Package Name already exists");
         }
+        voicePackage.setIsEnabled(false);
         tariffRepository.save(objectMapper.mapVoicePackageDTOToVoicePackage(voicePackage));
 
         return voicePackage;
@@ -37,6 +38,7 @@ public class TariffServiceImpl implements TariffService{
         if(doesPackageAlreadyExist(bundlePackage.getName())){
             throw new EntityAlreadyExistException("Package Name already exists");
         }
+        bundlePackage.setIsEnabled(false);
         tariffRepository.save(objectMapper.mapBundlePackageDTOToBundlePackage(bundlePackage));
 
         return bundlePackage;
