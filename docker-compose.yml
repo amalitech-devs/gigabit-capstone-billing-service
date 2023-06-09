@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: gigabit-capstone-billing-service
+    container_name: billing-service
+    ports:
+      - "8088:8088"
+    networks:
+      - kafka-zookeeper_default
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    environment:
+      - dbPassword=${dbPassword}
+      - dbUrl=${dbUrl}
+      - dbUser=${dbUser}
+      - EUREKA=${EUREKA}
+
+networks:
+  kafka-zookeeper_default:
+    external: true
