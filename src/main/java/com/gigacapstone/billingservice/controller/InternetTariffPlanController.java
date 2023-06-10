@@ -1,8 +1,7 @@
 package com.gigacapstone.billingservice.controller;
 
-import com.gigacapstone.billingservice.dto.InternetTariffPlanDto;
-import com.gigacapstone.billingservice.model.InternetTariffPlan;
-import com.gigacapstone.billingservice.model.TariffPlan;
+import com.gigacapstone.billingservice.dto.InternetPackageDTO;
+import com.gigacapstone.billingservice.model.InternetPackage;
 import com.gigacapstone.billingservice.service.InternetTariffPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,20 +26,20 @@ public class InternetTariffPlanController {
     }
 
     @PostMapping
-    public ResponseEntity<InternetTariffPlanDto> createTariffPlan(@RequestBody @Validated InternetTariffPlanDto tariffPlanDto) {
-        InternetTariffPlanDto createdTariffPlan = tariffPlanService.createTariffPlan(tariffPlanDto);
+    public ResponseEntity<InternetPackageDTO> createTariffPlan(@RequestBody @Validated InternetPackageDTO tariffPlanDto) {
+        InternetPackageDTO createdTariffPlan = tariffPlanService.createTariffPlan(tariffPlanDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTariffPlan);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InternetTariffPlanDto> getTariffPlanById(@PathVariable("id") UUID id) {
-        InternetTariffPlanDto tariffPlan = tariffPlanService.getTariffPlanById(id);
+    public ResponseEntity<InternetPackageDTO> getTariffPlanById(@PathVariable("id") UUID id) {
+        InternetPackageDTO tariffPlan = tariffPlanService.getTariffPlanById(id);
         return ResponseEntity.ok(tariffPlan);
     }
 
     @GetMapping
-    public ResponseEntity<Page<InternetTariffPlan>> getAllTariffPlans(Pageable pageable) {
-        Page<InternetTariffPlan> allTariffPlans = tariffPlanService.getAllTariffPlans(pageable);
+    public ResponseEntity<Page<InternetPackage>> getAllTariffPlans(Pageable pageable) {
+        Page<InternetPackage> allTariffPlans = tariffPlanService.getAllTariffPlans(pageable);
         return ResponseEntity.ok(allTariffPlans);
     }
 

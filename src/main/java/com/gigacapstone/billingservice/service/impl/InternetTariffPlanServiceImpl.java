@@ -1,9 +1,9 @@
 package com.gigacapstone.billingservice.service.impl;
 
 import com.gigacapstone.billingservice.exception.NotFoundException;
-import com.gigacapstone.billingservice.dto.InternetTariffPlanDto;
+import com.gigacapstone.billingservice.dto.InternetPackageDTO;
 import com.gigacapstone.billingservice.dto.mappers.ModelMapper;
-import com.gigacapstone.billingservice.model.InternetTariffPlan;
+import com.gigacapstone.billingservice.model.InternetPackage;
 import com.gigacapstone.billingservice.repository.InternetTariffPlanRepository;
 import com.gigacapstone.billingservice.service.InternetTariffPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,27 +28,27 @@ public class InternetTariffPlanServiceImpl implements InternetTariffPlanService 
     }
 
     @Override
-    public InternetTariffPlanDto createTariffPlan(InternetTariffPlanDto tariffPlanDto) {
-        InternetTariffPlan tariffPlan = tariffPlanMapper.mapToEntityOrDto(tariffPlanDto, InternetTariffPlan.class);
-        InternetTariffPlan savedTariffPlan = CompletableFuture.supplyAsync(()->
+    public InternetPackageDTO createTariffPlan(InternetPackageDTO tariffPlanDto) {
+        InternetPackage tariffPlan = tariffPlanMapper.mapToEntityOrDto(tariffPlanDto, InternetPackage.class);
+        InternetPackage savedTariffPlan = CompletableFuture.supplyAsync(()->
                 tariffPlanRepository
                         .save(tariffPlan))
                 .join();
-        return tariffPlanMapper.mapToEntityOrDto(savedTariffPlan, InternetTariffPlanDto.class);
+        return tariffPlanMapper.mapToEntityOrDto(savedTariffPlan, InternetPackageDTO.class);
     }
 
     @Override
-    public InternetTariffPlanDto getTariffPlanById(UUID id) {
-        InternetTariffPlan tariffPlan = CompletableFuture.supplyAsync(()->
+    public InternetPackageDTO getTariffPlanById(UUID id) {
+        InternetPackage tariffPlan = CompletableFuture.supplyAsync(()->
                         tariffPlanRepository
                                 .findById(id))
                 .join()
                 .orElseThrow(() -> new NotFoundException("Internet tariff plan not found with ID: " + id));
-        return tariffPlanMapper.mapToEntityOrDto(tariffPlan, InternetTariffPlanDto.class);
+        return tariffPlanMapper.mapToEntityOrDto(tariffPlan, InternetPackageDTO.class);
     }
 
     @Override
-    public Page<InternetTariffPlan> getAllTariffPlans(Pageable pageable) {
+    public Page<InternetPackage> getAllTariffPlans(Pageable pageable) {
         return CompletableFuture.supplyAsync(()->
                 tariffPlanRepository
                         .findAll(pageable))
@@ -57,7 +57,7 @@ public class InternetTariffPlanServiceImpl implements InternetTariffPlanService 
 
     @Override
     public void deleteTariffPlan(UUID id) {
-        InternetTariffPlan tariffPlan = CompletableFuture.supplyAsync(()
+        InternetPackage tariffPlan = CompletableFuture.supplyAsync(()
                         ->tariffPlanRepository
                         .findById(id))
                 .join()

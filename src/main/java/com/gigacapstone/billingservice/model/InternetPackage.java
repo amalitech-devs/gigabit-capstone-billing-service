@@ -17,30 +17,16 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-public class InternetTariffPlan {
+public class InternetPackage {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @OneToOne(cascade = CascadeType.ALL)
+    private TariffPlan tariffPlan;
+    private Double downloadSpeed;
+    private Double dataSize;
+    private Double uploadSpeed;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String name;
-
-    private int dataSize;
-
-    private double price;
-
-    private boolean isVatApplied;
-    private int vatPercentage;
-    private boolean isEnabled;
-    private int downloadSpeed;
-
-    private int uploadSpeed;
-
-
-
-    @Enumerated(EnumType.STRING)
-    private ExpirationRate expiry;
 
     @Override
     public boolean equals(Object o) {

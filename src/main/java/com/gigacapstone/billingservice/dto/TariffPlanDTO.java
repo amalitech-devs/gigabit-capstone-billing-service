@@ -1,26 +1,18 @@
-package com.gigacapstone.billingservice.model;
+package com.gigacapstone.billingservice.dto;
+
 import com.gigacapstone.billingservice.enums.ExpirationRate;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.Data;
 import jakarta.validation.constraints.Positive;
-import lombok.Getter;
-import lombok.Setter;
 
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@Getter
-@Setter
-public class TariffPlan {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+@Data
+public class TariffPlanDTO {
     private Long id;
 
     @NotEmpty(message = "tariff name cannot be empty")
     @Pattern(regexp = "\\S+.*\\S+", message = "Username cannot have leading or trailing spaces")
-    @Column(unique = true)
     private String name;
 
     @Positive(message = "price must be a positive value")
@@ -33,9 +25,8 @@ public class TariffPlan {
     private Boolean isVatApplied;
 
     @Positive
-    private Integer vatPercentage;
+    private int vatPercentage;
 
-    @Enumerated(EnumType.STRING)
     @NotNull(message = "expiration rate cannot be null")
     private ExpirationRate expirationRate;
 }
