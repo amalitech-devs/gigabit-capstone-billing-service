@@ -1,9 +1,8 @@
 package com.gigacapstone.billingservice.service;
 
+import com.gigacapstone.billingservice.dto.BundlePackageDTO;
 import com.gigacapstone.billingservice.dto.VoicePackageDTO;
 import com.gigacapstone.billingservice.exception.EntityAlreadyExistException;
-import com.gigacapstone.billingservice.model.TariffPlan;
-import com.gigacapstone.billingservice.model.VoicePackage;
 import com.gigacapstone.billingservice.repository.TariffRepository;
 import com.gigacapstone.billingservice.utils.Mapper;
 import lombok.RequiredArgsConstructor;
@@ -16,15 +15,36 @@ public class TariffServiceImpl implements TariffService{
     private final TariffRepository tariffRepository;
     private final Mapper objectMapper;
     @Override
-    public VoicePackageDTO createVoicePackage(VoicePackage voicePackage) {
-        if(doesPackageAlreadyExist(voicePackage)){
+    public VoicePackageDTO createVoicePackage(VoicePackageDTO voicePackage) {
+        if(voicePackage == null){
+            throw new IllegalArgumentException("Input voice package cannot be null");
+        }
+
+        if(doesPackageAlreadyExist(voicePackage.getName())){
             throw new EntityAlreadyExistException("Package Name already exists");
         }
-        VoicePackage savedVoicePackage = tariffRepository.save(voicePackage);
+        voicePackage.setIsEnabled(false);
+        tariffRepository.save(objectMapper.mapVoicePackageDTOToVoicePackage(voicePackage));
 
-        return objectMapper.mapVoicePackageToVoicePackageDTO(savedVoicePackage);
+        return voicePackage;
     }
-    private boolean doesPackageAlreadyExist(TariffPlan tariffPlan){
-        return tariffRepository.findTariffPlanByName(tariffPlan.getName()).isPresent();
+
+    @Override
+    public BundlePackageDTO createBundlePackage(BundlePackageDTO bundlePackage) {
+        if(bundlePackage == null){
+            throw new IllegalArgumentException("Input voice package cannot be null");
+        }
+
+        if(doesPackageAlreadyExist(bundlePackage.getName())){
+            throw new EntityAlreadyExistException("Package Name already exists");
+        }
+        bundlePackage.setIsEnabled(false);
+        tariffRepository.save(objectMapper.mapBundlePackageDTOToBundlePackage(bundlePackage));
+
+        return bundlePackage;
+    }
+
+    private boolean doesPackageAlreadyExist(String packageName){
+        return tariffRepository.findTariffPlanByName(packageName).isPresent();
     }
 }

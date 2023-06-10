@@ -7,5 +7,5 @@ RUN mvn clean package -DskipTests
 #
 FROM eclipse-temurin:17-jdk
 COPY --from=build /app/target/billing-service.jar app.jar
-EXPOSE 8060
+EXPOSE 8088
 ENTRYPOINT ["java","-jar","app.jar"]
