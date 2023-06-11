@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -31,6 +32,12 @@ public class InternetTariffPlanController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTariffPlan);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<InternetPackageDTO> updateTariffPlan(@PathVariable("id") UUID id, @RequestBody @Validated InternetPackageDTO tariffPlanDto) {
+        InternetPackageDTO createdTariffPlan = tariffPlanService.updateTariffPlanById(id,tariffPlanDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTariffPlan);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<InternetPackageDTO> getTariffPlanById(@PathVariable("id") UUID id) {
         InternetPackageDTO tariffPlan = tariffPlanService.getTariffPlanById(id);
@@ -44,8 +51,7 @@ public class InternetTariffPlanController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTariffPlan(@PathVariable("id") UUID id) {
-        tariffPlanService.deleteTariffPlan(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Map<String,String>> deleteTariffPlan(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(tariffPlanService.deleteTariffPlan(id));
     }
 }

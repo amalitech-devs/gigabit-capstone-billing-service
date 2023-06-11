@@ -2,9 +2,9 @@ package com.gigacapstone.billingservice.service.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gigacapstone.billingservice.exception.NotFoundException;
 import com.gigacapstone.billingservice.dto.InternetPackageDTO;
-import com.gigacapstone.billingservice.dto.mappers.ModelMapper;
 import com.gigacapstone.billingservice.model.InternetPackage;
 import com.gigacapstone.billingservice.repository.InternetTariffPlanRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +27,7 @@ class InternetTariffPlanServiceImplTest {
     private InternetTariffPlanRepository tariffPlanRepository;
 
     @Mock
-    private ModelMapper tariffPlanMapper;
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private InternetTariffPlanServiceImpl tariffPlanService;
@@ -44,9 +44,9 @@ class InternetTariffPlanServiceImplTest {
         InternetPackage savedTariffPlan = new InternetPackage();
         InternetPackageDTO expectedDto = new InternetPackageDTO();
 
-        when(tariffPlanMapper.mapToEntityOrDto(any(), eq(InternetPackage.class))).thenReturn(savedTariffPlan);
+        when(objectMapper.convertValue(any(), eq(InternetPackage.class))).thenReturn(savedTariffPlan);
         when(tariffPlanRepository.save(any())).thenReturn(savedTariffPlan);
-        when(tariffPlanMapper.mapToEntityOrDto(any(), eq(InternetPackageDTO.class))).thenReturn(expectedDto);
+        when(objectMapper.convertValue(any(), eq(InternetPackageDTO.class))).thenReturn(expectedDto);
 
         // Act
         InternetPackageDTO resultDto = tariffPlanService.createTariffPlan(inputDto);
@@ -64,7 +64,7 @@ class InternetTariffPlanServiceImplTest {
         InternetPackageDTO expectedDto = new InternetPackageDTO();
 
         when(tariffPlanRepository.findById(id)).thenReturn(Optional.of(tariffPlan));
-        when(tariffPlanMapper.mapToEntityOrDto(tariffPlan, InternetPackageDTO.class)).thenReturn(expectedDto);
+        when(objectMapper.convertValue(tariffPlan, InternetPackageDTO.class)).thenReturn(expectedDto);
 
         // Act
         InternetPackageDTO resultDto = tariffPlanService.getTariffPlanById(id);

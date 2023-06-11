@@ -24,7 +24,7 @@ public class TariffPlan {
     private String name;
 
     @Positive(message = "price must be a positive value")
-    private double price;
+    private Double price;
 
     @NotNull
     private Boolean isEnabled;
@@ -38,4 +38,18 @@ public class TariffPlan {
     @Enumerated(EnumType.STRING)
     @NotNull(message = "expiration rate cannot be null")
     private ExpirationRate expirationRate;
+
+    @Override
+    public String toString() {
+        return "TariffPlan{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", isEnabled=" + isEnabled +
+                ", isVatApplied=" + isVatApplied +
+                ", vatPercentage=" + vatPercentage +
+                ", expirationRate=" + expirationRate +
+                '}';
+    }
+
 }

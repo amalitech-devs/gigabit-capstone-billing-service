@@ -1,6 +1,7 @@
 package com.gigacapstone.billingservice.dto;
 
 import com.gigacapstone.billingservice.enums.ExpirationRate;
+import com.gigacapstone.billingservice.model.TariffPlan;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -8,7 +9,7 @@ import lombok.Data;
 import jakarta.validation.constraints.Positive;
 
 @Data
-public class TariffPlanDTO {
+public class TariffPlanDTO{
     private Long id;
 
     @NotEmpty(message = "tariff name cannot be empty")
@@ -16,7 +17,7 @@ public class TariffPlanDTO {
     private String name;
 
     @Positive(message = "price must be a positive value")
-    private double price;
+    private Double price;
 
     @NotNull
     private Boolean isEnabled;
@@ -25,7 +26,7 @@ public class TariffPlanDTO {
     private Boolean isVatApplied;
 
     @Positive
-    private int vatPercentage;
+    private Integer vatPercentage;
 
     @NotNull(message = "expiration rate cannot be null")
     private ExpirationRate expirationRate;
