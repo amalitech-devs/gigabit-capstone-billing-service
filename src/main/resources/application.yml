@@ -23,3 +23,8 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${EUREKA}:8761/eureka
+
+springdoc:
+  enable-native-support: true
+  swagger-ui:
+    path: /swagger-ui
