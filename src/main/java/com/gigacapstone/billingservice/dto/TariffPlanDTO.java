@@ -1,7 +1,6 @@
 package com.gigacapstone.billingservice.dto;
 
 import com.gigacapstone.billingservice.enums.ExpirationRate;
-import com.gigacapstone.billingservice.model.TariffPlan;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
