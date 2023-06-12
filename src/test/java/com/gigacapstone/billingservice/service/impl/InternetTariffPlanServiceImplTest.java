@@ -2,10 +2,10 @@ package com.gigacapstone.billingservice.service.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gigacapstone.billingservice.exception.NotFoundException;
-import com.gigacapstone.billingservice.dto.InternetTariffPlanDto;
-import com.gigacapstone.billingservice.dto.mappers.ModelMapper;
-import com.gigacapstone.billingservice.model.InternetTariffPlan;
+import com.gigacapstone.billingservice.dto.InternetPackageDTO;
+import com.gigacapstone.billingservice.model.InternetPackage;
 import com.gigacapstone.billingservice.repository.InternetTariffPlanRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ class InternetTariffPlanServiceImplTest {
     private InternetTariffPlanRepository tariffPlanRepository;
 
     @Mock
-    private ModelMapper tariffPlanMapper;
+    private ObjectMapper objectMapper;
 
     @InjectMocks
     private InternetTariffPlanServiceImpl tariffPlanService;
@@ -40,16 +40,16 @@ class InternetTariffPlanServiceImplTest {
     @Test
     void createTariffPlan_Success() {
         // Arrange
-        InternetTariffPlanDto inputDto = new InternetTariffPlanDto();
-        InternetTariffPlan savedTariffPlan = new InternetTariffPlan();
-        InternetTariffPlanDto expectedDto = new InternetTariffPlanDto();
+        InternetPackageDTO inputDto = new InternetPackageDTO();
+        InternetPackage savedTariffPlan = new InternetPackage();
+        InternetPackageDTO expectedDto = new InternetPackageDTO();
 
-        when(tariffPlanMapper.mapToEntityOrDto(any(), eq(InternetTariffPlan.class))).thenReturn(savedTariffPlan);
+        when(objectMapper.convertValue(any(), eq(InternetPackage.class))).thenReturn(savedTariffPlan);
         when(tariffPlanRepository.save(any())).thenReturn(savedTariffPlan);
-        when(tariffPlanMapper.mapToEntityOrDto(any(), eq(InternetTariffPlanDto.class))).thenReturn(expectedDto);
+        when(objectMapper.convertValue(any(), eq(InternetPackageDTO.class))).thenReturn(expectedDto);
 
         // Act
-        InternetTariffPlanDto resultDto = tariffPlanService.createTariffPlan(inputDto);
+        InternetPackageDTO resultDto = tariffPlanService.createTariffPlan(inputDto);
 
         // Assert
         assertNotNull(resultDto);
@@ -60,14 +60,14 @@ class InternetTariffPlanServiceImplTest {
     void getTariffPlanById_ExistingId_Success() {
         // Arrange
         UUID id = UUID.randomUUID();
-        InternetTariffPlan tariffPlan = new InternetTariffPlan();
-        InternetTariffPlanDto expectedDto = new InternetTariffPlanDto();
+        InternetPackage tariffPlan = new InternetPackage();
+        InternetPackageDTO expectedDto = new InternetPackageDTO();
 
         when(tariffPlanRepository.findById(id)).thenReturn(Optional.of(tariffPlan));
-        when(tariffPlanMapper.mapToEntityOrDto(tariffPlan, InternetTariffPlanDto.class)).thenReturn(expectedDto);
+        when(objectMapper.convertValue(tariffPlan, InternetPackageDTO.class)).thenReturn(expectedDto);
 
         // Act
-        InternetTariffPlanDto resultDto = tariffPlanService.getTariffPlanById(id);
+        InternetPackageDTO resultDto = tariffPlanService.getTariffPlanById(id);
 
         // Assert
         assertNotNull(resultDto);
@@ -88,13 +88,13 @@ class InternetTariffPlanServiceImplTest {
     @Test
     void getAllTariffPlans_Success() {
         // Arrange
-        Page<InternetTariffPlan> expectedPage = Page.empty();
+        Page<InternetPackage> expectedPage = Page.empty();
         Pageable pageable = Pageable.unpaged();
 
         when(tariffPlanRepository.findAll(pageable)).thenReturn(expectedPage);
 
         // Act
-        Page<InternetTariffPlan> resultPage = tariffPlanService.getAllTariffPlans(pageable);
+        Page<InternetPackage> resultPage = tariffPlanService.getAllTariffPlans(pageable);
 
         // Assert
         assertNotNull(resultPage);
@@ -105,7 +105,7 @@ class InternetTariffPlanServiceImplTest {
     void deleteTariffPlan_ExistingId_Success() {
         // Arrange
         UUID id = UUID.randomUUID();
-        InternetTariffPlan tariffPlan = new InternetTariffPlan();
+        InternetPackage tariffPlan = new InternetPackage();
 
         when(tariffPlanRepository.findById(id)).thenReturn(Optional.of(tariffPlan));
 

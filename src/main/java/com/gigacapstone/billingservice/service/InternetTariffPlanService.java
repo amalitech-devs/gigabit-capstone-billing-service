@@ -1,19 +1,20 @@
 package com.gigacapstone.billingservice.service;
 
-import com.gigacapstone.billingservice.dto.InternetTariffPlanDto;
-import com.gigacapstone.billingservice.model.InternetTariffPlan;
-import com.gigacapstone.billingservice.model.TariffPlan;
+import com.gigacapstone.billingservice.dto.InternetPackageDTO;
+import com.gigacapstone.billingservice.model.InternetPackage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Map;
 import java.util.UUID;
 
 public interface InternetTariffPlanService {
-    InternetTariffPlanDto createTariffPlan(InternetTariffPlanDto tariffPlanDto);
+    InternetPackageDTO createTariffPlan(InternetPackageDTO tariffPlanDto);
 
-    InternetTariffPlanDto getTariffPlanById(UUID id);
+    InternetPackageDTO getTariffPlanById(UUID id);
+    InternetPackageDTO updateTariffPlanById(UUID id, InternetPackageDTO tariffPlanDto);
 
-    Page<InternetTariffPlan> getAllTariffPlans(Pageable pageable);
+    Page<InternetPackage> getAllTariffPlans(Pageable pageable);
 
-    void deleteTariffPlan(UUID id);
+    Map<String, String> deleteTariffPlan(UUID id);
 }
