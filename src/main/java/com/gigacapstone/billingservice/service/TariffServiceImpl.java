@@ -55,7 +55,7 @@ public class TariffServiceImpl implements TariffService {
     @Override
     public List<BundlePackageDTO> listAllBundlePackages(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<BundlePackage> bundlePackages = tariffRepository.findAllBundlePackages(pageable);
+        Page<BundlePackage> bundlePackages = tariffRepository.findBundlePackages(pageable);
         return bundlePackages.getContent()
                 .stream().map(objectMapper::mapBundlePackageToBundlePackageDTO)
                 .toList();
@@ -64,7 +64,7 @@ public class TariffServiceImpl implements TariffService {
     @Override
     public List<VoicePackageDTO> listAllVoicePackages(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<VoicePackage> voicePackages = tariffRepository.findAllVoicePackages(pageable);
+        Page<VoicePackage> voicePackages = tariffRepository.findVoicePackages(pageable);
         return voicePackages.getContent()
                 .stream()
                 .map(objectMapper::mapVoicePackageToVoicePackageDTO)
