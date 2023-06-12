@@ -1,5 +1,8 @@
 package com.gigacapstone.billingservice.model;
+
+import com.gigacapstone.billingservice.enums.ExpirationRate;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -14,17 +17,30 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-public class InternetPackage {
+public class InternetTariffPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private Double downloadSpeed;
-    private Double dataSize;
-    private Double uploadSpeed;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
-    private TariffPlan tariffPlan;
 
+    @NotBlank
+    @Column(nullable = false)
+    private String name;
+
+    private int dataSize;
+
+    private double price;
+
+    private boolean isVatApplied;
+    private int vatPercentage;
+    private boolean isEnabled;
+    private int downloadSpeed;
+
+    private int uploadSpeed;
+
+
+
+    @Enumerated(EnumType.STRING)
+    private ExpirationRate expiry;
 
     @Override
     public boolean equals(Object o) {
@@ -32,17 +48,6 @@ public class InternetPackage {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         TariffPlan that = (TariffPlan) o;
         return getId() != null && Objects.equals(getId(), that.getId());
-    }
-
-    @Override
-    public String toString() {
-        return "InternetPackage{" +
-                "id=" + id +
-                ", tariffPlan=" + tariffPlan +
-                ", downloadSpeed=" + downloadSpeed +
-                ", dataSize=" + dataSize +
-                ", uploadSpeed=" + uploadSpeed +
-                '}';
     }
 
     @Override
