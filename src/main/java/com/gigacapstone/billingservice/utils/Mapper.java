@@ -55,13 +55,13 @@ public class Mapper {
 
     public VoicePackageDTO mapVoicePackageToVoicePackageDTO(VoicePackage voicePackage){
         VoicePackageDTO voicePackageDTO = new VoicePackageDTO();
-        voicePackageDTO.setName(voicePackageDTO.getName());
-        voicePackageDTO.setPrice(voicePackageDTO.getPrice());
-        voicePackageDTO.setIsEnabled(voicePackageDTO.getIsEnabled());
-        voicePackageDTO.setIsVatApplied(voicePackageDTO.getIsVatApplied());
-        voicePackageDTO.setVatPercentage(voicePackageDTO.getVatPercentage());
-        voicePackageDTO.setCallTime(voicePackageDTO.getCallTime());
-        voicePackageDTO.setExpirationRate(voicePackageDTO.getExpirationRate());
+        voicePackageDTO.setName(voicePackage.getName());
+        voicePackageDTO.setPrice(voicePackage.getPrice());
+        voicePackageDTO.setIsEnabled(voicePackage.getIsEnabled());
+        voicePackageDTO.setIsVatApplied(voicePackage.getIsVatApplied());
+        voicePackageDTO.setVatPercentage(voicePackage.getVatPercentage());
+        voicePackageDTO.setCallTime(voicePackage.getCallTime());
+        voicePackageDTO.setExpirationRate(voicePackage.getExpirationRate());
 
         return voicePackageDTO;
     }

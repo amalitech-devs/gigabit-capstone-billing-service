@@ -17,8 +17,8 @@ public interface TariffRepository extends JpaRepository<TariffPlan, Long> {
     Optional<TariffPlan> findTariffPlanByName(String name);
 
     @Query("SELECT bp FROM BundlePackage bp")
-    Page<BundlePackage> findAllBundlePackages(Pageable pageable);
+    Page<BundlePackage> findBundlePackages(Pageable pageable);
 
     @Query("SELECT vp FROM VoicePackage vp")
-    Page<VoicePackage> findAllVoicePackages(Pageable pageable);
+    Page<VoicePackage> findVoicePackages(Pageable pageable);
 }
