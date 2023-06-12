@@ -30,10 +30,39 @@ public class Mapper {
         bundlePackage.setVatPercentage(bundlePackageDTO.getVatPercentage());
         bundlePackage.setCallTime(bundlePackageDTO.getCallTime());
         bundlePackage.setExpirationRate(bundlePackageDTO.getExpirationRate());
-        bundlePackage.setDataSize(bundlePackage.getDataSize());
-        bundlePackage.setDownloadSpeed(bundlePackage.getDownloadSpeed());
+        bundlePackage.setDataSize(bundlePackageDTO.getDataSize());
+        bundlePackage.setDownloadSpeed(bundlePackageDTO.getDownloadSpeed());
         bundlePackage.setUploadSpeed(bundlePackageDTO.getUploadSpeed());
 
         return bundlePackage;
+    }
+
+    public BundlePackageDTO mapBundlePackageToBundlePackageDTO(BundlePackage bundlePackage){
+        BundlePackageDTO bundlePackageDTO = new BundlePackageDTO();
+        bundlePackageDTO.setName(bundlePackage.getName());
+        bundlePackageDTO.setPrice(bundlePackage.getPrice());
+        bundlePackageDTO.setIsEnabled(bundlePackage.getIsEnabled());
+        bundlePackageDTO.setIsVatApplied(bundlePackage.getIsVatApplied());
+        bundlePackageDTO.setVatPercentage(bundlePackage.getVatPercentage());
+        bundlePackageDTO.setCallTime(bundlePackage.getCallTime());
+        bundlePackageDTO.setExpirationRate(bundlePackage.getExpirationRate());
+        bundlePackageDTO.setDataSize(bundlePackage.getDataSize());
+        bundlePackageDTO.setDownloadSpeed(bundlePackage.getDownloadSpeed());
+        bundlePackageDTO.setUploadSpeed(bundlePackage.getUploadSpeed());
+
+        return bundlePackageDTO;
+    }
+
+    public VoicePackageDTO mapVoicePackageToVoicePackageDTO(VoicePackage voicePackage){
+        VoicePackageDTO voicePackageDTO = new VoicePackageDTO();
+        voicePackageDTO.setName(voicePackageDTO.getName());
+        voicePackageDTO.setPrice(voicePackageDTO.getPrice());
+        voicePackageDTO.setIsEnabled(voicePackageDTO.getIsEnabled());
+        voicePackageDTO.setIsVatApplied(voicePackageDTO.getIsVatApplied());
+        voicePackageDTO.setVatPercentage(voicePackageDTO.getVatPercentage());
+        voicePackageDTO.setCallTime(voicePackageDTO.getCallTime());
+        voicePackageDTO.setExpirationRate(voicePackageDTO.getExpirationRate());
+
+        return voicePackageDTO;
     }
 }
