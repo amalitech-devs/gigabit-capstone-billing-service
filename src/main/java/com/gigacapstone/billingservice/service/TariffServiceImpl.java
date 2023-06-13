@@ -53,22 +53,17 @@ public class TariffServiceImpl implements TariffService {
     }
 
     @Override
-    public List<BundlePackageDTO> listAllBundlePackages(int page, int size) {
+    public Page<BundlePackageDTO> listAllBundlePackages(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<BundlePackage> bundlePackages = tariffRepository.findBundlePackages(pageable);
-        return bundlePackages.getContent()
-                .stream().map(objectMapper::mapBundlePackageToBundlePackageDTO)
-                .toList();
+        return bundlePackages.map(objectMapper::mapBundlePackageToBundlePackageDTO);
     }
 
     @Override
-    public List<VoicePackageDTO> listAllVoicePackages(int page, int size) {
+    public Page<VoicePackageDTO> listAllVoicePackages(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<VoicePackage> voicePackages = tariffRepository.findVoicePackages(pageable);
-        return voicePackages.getContent()
-                .stream()
-                .map(objectMapper::mapVoicePackageToVoicePackageDTO)
-                .toList();
+        return voicePackages.map(objectMapper::mapVoicePackageToVoicePackageDTO);
     }
 
     private boolean doesPackageAlreadyExist(String packageName) {
