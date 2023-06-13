@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -13,7 +14,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Getter
 @Setter
-@ToString
 public class InternetPackage {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,8 +22,10 @@ public class InternetPackage {
     private Double dataSize;
     private Double uploadSpeed;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private TariffPlan tariffPlan;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 
 
     @Override

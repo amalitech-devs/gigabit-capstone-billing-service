@@ -12,6 +12,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -34,10 +37,13 @@ public class InternetTariffPlanServiceImpl implements InternetTariffPlanService 
 
     @Override
     public InternetPackageDTO createTariffPlan(@NotNull(message = "Input Internet package cannot be null") InternetPackageDTO tariffPlanDto) {
+
         InternetPackage tariffPlan = objectMapper.convertValue(tariffPlanDto, InternetPackage.class);
-        InternetPackage savedTariffPlan = supplyAsync(()->
-                tariffPlanRepository
-                        .save(tariffPlan))
+        InternetPackage savedTariffPlan = supplyAsync(()-> {
+            tariffPlan.setCreatedAt(new Timestamp(new Date().getTime()));
+          return  tariffPlanRepository
+                    .save(tariffPlan);
+        })
                 .join();
         return objectMapper.convertValue(savedTariffPlan, InternetPackageDTO.class);
     }
@@ -60,6 +66,8 @@ public class InternetTariffPlanServiceImpl implements InternetTariffPlanService 
                                 new NotFoundException(NOTFOUND + id)))
                 .join();
         tariffPlan.setId(internetPackage.getId());
+        tariffPlan.setCreatedAt(internetPackage.getCreatedAt());
+        tariffPlan.setUpdatedAt(new Timestamp(new Date().getTime()));
         InternetPackage updateInterPackage = supplyAsync(() -> tariffPlanRepository.save(tariffPlan)).join();
         return objectMapper.convertValue(updateInterPackage, InternetPackageDTO.class);
     }

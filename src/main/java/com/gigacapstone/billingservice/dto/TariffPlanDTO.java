@@ -17,7 +17,6 @@ public class TariffPlanDTO{
 
     @Positive(message = "price must be a positive value")
     private Double price;
-
     @NotNull
     private Boolean isEnabled;
 
@@ -29,4 +28,8 @@ public class TariffPlanDTO{
 
     @NotNull(message = "expiration rate cannot be null")
     private ExpirationRate expirationRate;
+
+    public String getName() {
+        return name.trim();
+    }
 }
