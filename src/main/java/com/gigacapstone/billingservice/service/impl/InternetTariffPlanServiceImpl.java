@@ -1,6 +1,7 @@
 package com.gigacapstone.billingservice.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gigacapstone.billingservice.exception.EntityAlreadyExistException;
 import com.gigacapstone.billingservice.exception.NotFoundException;
 import com.gigacapstone.billingservice.dto.InternetPackageDTO;
 import com.gigacapstone.billingservice.model.InternetPackage;
@@ -37,14 +38,19 @@ public class InternetTariffPlanServiceImpl implements InternetTariffPlanService 
 
     @Override
     public InternetPackageDTO createTariffPlan(@NotNull(message = "Input Internet package cannot be null") InternetPackageDTO tariffPlanDto) {
-
         InternetPackage tariffPlan = objectMapper.convertValue(tariffPlanDto, InternetPackage.class);
-        InternetPackage savedTariffPlan = supplyAsync(()-> {
-            tariffPlan.setCreatedAt(new Timestamp(new Date().getTime()));
-          return  tariffPlanRepository
-                    .save(tariffPlan);
-        })
-                .join();
+        InternetPackage savedTariffPlan;
+        try {
+            savedTariffPlan = supplyAsync(()-> {
+                tariffPlan.setCreatedAt(new Timestamp(new Date().getTime()));
+                return  tariffPlanRepository
+                        .save(tariffPlan);
+            })
+                    .join();
+
+        }catch (Exception e){
+            throw new EntityAlreadyExistException("Internet Package with Name:"+tariffPlanDto.getTariffPlan().getName()+" already exists",e.getCause());
+        }
         return objectMapper.convertValue(savedTariffPlan, InternetPackageDTO.class);
     }
 
@@ -61,14 +67,19 @@ public class InternetTariffPlanServiceImpl implements InternetTariffPlanService 
     @Override
     public InternetPackageDTO updateTariffPlanById(UUID id, InternetPackageDTO tariffPlanDto) {
         InternetPackage tariffPlan = objectMapper.convertValue(tariffPlanDto, InternetPackage.class);
-        InternetPackage internetPackage  = supplyAsync(() -> tariffPlanRepository.findById(id)
-                        .orElseThrow(() ->
-                                new NotFoundException(NOTFOUND + id)))
-                .join();
-        tariffPlan.setId(internetPackage.getId());
-        tariffPlan.setCreatedAt(internetPackage.getCreatedAt());
-        tariffPlan.setUpdatedAt(new Timestamp(new Date().getTime()));
-        InternetPackage updateInterPackage = supplyAsync(() -> tariffPlanRepository.save(tariffPlan)).join();
+        InternetPackage updateInterPackage;
+        try {
+            InternetPackage internetPackage  = supplyAsync(() -> tariffPlanRepository.findById(id)
+                    .orElseThrow(() ->
+                            new NotFoundException(NOTFOUND + id)))
+                    .join();
+            tariffPlan.setId(internetPackage.getId());
+            tariffPlan.setCreatedAt(internetPackage.getCreatedAt());
+            tariffPlan.setUpdatedAt(new Timestamp(new Date().getTime()));
+            updateInterPackage = supplyAsync(() -> tariffPlanRepository.save(tariffPlan)).join();
+        }catch (Exception e){
+            throw new EntityAlreadyExistException("Internet Package with Name:"+tariffPlanDto.getTariffPlan().getName()+" conflict with other internet package plan name.",e.getCause());
+        }
         return objectMapper.convertValue(updateInterPackage, InternetPackageDTO.class);
     }
 
