@@ -27,10 +27,8 @@ public class TariffPlan {
     @Positive(message = "price must be a positive value")
     private Double price;
 
-    @NotNull
     private Boolean isEnabled;
 
-    @NotNull
     private Boolean isVatApplied;
 
     @Positive
