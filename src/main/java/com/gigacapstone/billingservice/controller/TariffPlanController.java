@@ -6,6 +6,7 @@ import com.gigacapstone.billingservice.service.TariffService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,18 +31,13 @@ public class TariffPlanController {
 
     @GetMapping("/voice")
     @ResponseStatus(HttpStatus.OK)
-    Page<VoicePackageDTO> getVoicePackages(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return tariffService.listAllVoicePackages(page, size);
+    Page<VoicePackageDTO> getVoicePackages(Pageable pageable) {
+        return tariffService.listAllVoicePackages(pageable);
     }
 
     @GetMapping("/bundle")
     @ResponseStatus(HttpStatus.OK)
-    Page<BundlePackageDTO> getBundlePackages(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        return tariffService.listAllBundlePackages(page, size);
+    Page<BundlePackageDTO> getBundlePackages(Pageable pageable) {
+        return tariffService.listAllBundlePackages(pageable);
     }
 }

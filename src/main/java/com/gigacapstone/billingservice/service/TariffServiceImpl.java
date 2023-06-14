@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -51,20 +52,18 @@ public class TariffServiceImpl implements TariffService {
     }
 
     @Override
-    public Page<BundlePackageDTO> listAllBundlePackages(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<BundlePackageDTO> listAllBundlePackages(Pageable pageable) {
         Page<BundlePackage> bundlePackages = tariffRepository.findBundlePackages(pageable);
         return bundlePackages.map(bundle -> mapper.convertValue(bundle, BundlePackageDTO.class));
     }
 
     @Override
-    public Page<VoicePackageDTO> listAllVoicePackages(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<VoicePackageDTO> listAllVoicePackages(Pageable pageable) {
         Page<VoicePackage> voicePackages = tariffRepository.findVoicePackages(pageable);
         return voicePackages.map(voice -> mapper.convertValue(voice, VoicePackageDTO.class));
     }
 
-    private boolean doesPackageAlreadyExist(String packageName) {
+    public boolean doesPackageAlreadyExist(String packageName) {
         return tariffRepository.findTariffPlanByName(packageName).isPresent();
     }
 }
