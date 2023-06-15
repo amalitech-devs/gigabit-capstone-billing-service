@@ -47,4 +47,14 @@ public class TariffPlanController {
     AllPackagesDTO getAllPackages(Pageable pageable) {
         return tariffService.listAllPackages(pageable);
     }
+
+    @GetMapping("/voice/search")
+    Page<VoicePackageDTO> searchVoicePackages(@RequestParam String name, Pageable pageable){
+        return tariffService.searchVoicePackage(name, pageable);
+    }
+
+    @GetMapping("/bundle/search")
+    Page<BundlePackageDTO> searchBundlePackages(@RequestParam String name, Pageable pageable){
+        return tariffService.searchBundlePackage(name, pageable);
+    }
 }
