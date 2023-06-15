@@ -1,5 +1,6 @@
 package com.gigacapstone.billingservice.controller;
 
+import com.gigacapstone.billingservice.dto.AllPackagesDTO;
 import com.gigacapstone.billingservice.dto.BundlePackageDTO;
 import com.gigacapstone.billingservice.dto.VoicePackageDTO;
 import com.gigacapstone.billingservice.service.TariffService;
@@ -39,5 +40,11 @@ public class TariffPlanController {
     @ResponseStatus(HttpStatus.OK)
     Page<BundlePackageDTO> getBundlePackages(Pageable pageable) {
         return tariffService.listAllBundlePackages(pageable);
+    }
+
+    @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
+    AllPackagesDTO getAllPackages(Pageable pageable) {
+        return tariffService.listAllPackages(pageable);
     }
 }
