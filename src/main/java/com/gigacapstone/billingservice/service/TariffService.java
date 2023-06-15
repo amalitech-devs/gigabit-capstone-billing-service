@@ -1,8 +1,12 @@
 package com.gigacapstone.billingservice.service;
 
+import com.gigacapstone.billingservice.dto.AllPackagesDTO;
 import com.gigacapstone.billingservice.dto.BundlePackageDTO;
 import com.gigacapstone.billingservice.dto.VoicePackageDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface TariffService {
 
@@ -10,7 +14,13 @@ public interface TariffService {
 
     BundlePackageDTO createBundlePackage(BundlePackageDTO bundlePackage);
 
-    Page<BundlePackageDTO> listAllBundlePackages(int page, int size);
+    Page<BundlePackageDTO> listAllBundlePackages(Pageable pageable);
 
-    Page<VoicePackageDTO> listAllVoicePackages(int page, int size);
+    Page<VoicePackageDTO> listAllVoicePackages(Pageable pageable);
+
+    AllPackagesDTO listAllPackages(Pageable pageable);
+
+    Page<VoicePackageDTO> searchVoicePackage(String packageName, Pageable pageable);
+
+    Page<BundlePackageDTO> searchBundlePackage(String packageName, Pageable pageable);
 }

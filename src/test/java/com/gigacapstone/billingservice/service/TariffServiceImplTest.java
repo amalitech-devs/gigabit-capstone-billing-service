@@ -1,12 +1,15 @@
 package com.gigacapstone.billingservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gigacapstone.billingservice.repository.TariffRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -20,6 +23,13 @@ class TariffServiceImplTest {
     @MockBean
     private TariffRepository tariffRepository;
 
+    @Autowired
+    private ObjectMapper mapper;
+
+    @BeforeEach
+    void setUp(){
+        reset(tariffRepository);
+    }
 
     @Test
     void testCreateVoicePackage_NullInput() {
@@ -29,5 +39,10 @@ class TariffServiceImplTest {
         // Verify that the repository and mapper methods are not called
         verify(tariffRepository, never()).findTariffPlanByName(any());
         verify(tariffRepository, never()).save(any());
+    }
+
+    @Test
+    void checkObjectMapper(){
+        assertNotNull(mapper);
     }
 }

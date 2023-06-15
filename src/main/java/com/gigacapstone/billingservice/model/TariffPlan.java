@@ -15,8 +15,9 @@ import lombok.Setter;
 public class TariffPlan {
 
     @Id
+    @SequenceGenerator(name = "idSequence", sequenceName = "ID_SEQUENCE", allocationSize = 1, initialValue = 0)
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private int id;
 
     @NotEmpty(message = "tariff name cannot be empty")
     @Pattern(regexp = "\\S+.*\\S+", message = "Username cannot have leading or trailing spaces")
@@ -26,10 +27,8 @@ public class TariffPlan {
     @Positive(message = "price must be a positive value")
     private Double price;
 
-    @NotNull
     private Boolean isEnabled;
 
-    @NotNull
     private Boolean isVatApplied;
 
     @Positive
