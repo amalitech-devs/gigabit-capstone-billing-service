@@ -16,9 +16,11 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static java.util.concurrent.CompletableFuture.*;
 
@@ -49,7 +51,7 @@ public class InternetTariffPlanServiceImpl implements InternetTariffPlanService 
                     .join();
 
         }catch (Exception e){
-            throw new EntityAlreadyExistException("Internet Package with Name:"+tariffPlanDto.getTariffPlan().getName()+" already exists",e.getCause());
+            throw new EntityAlreadyExistException("Internet Package with Name: "+tariffPlanDto.getTariffPlan().getName()+" already exists",e.getCause());
         }
         return objectMapper.convertValue(savedTariffPlan, InternetPackageDTO.class);
     }
@@ -78,7 +80,7 @@ public class InternetTariffPlanServiceImpl implements InternetTariffPlanService 
             tariffPlan.setUpdatedAt(new Timestamp(new Date().getTime()));
             updateInterPackage = supplyAsync(() -> tariffPlanRepository.save(tariffPlan)).join();
         }catch (Exception e){
-            throw new EntityAlreadyExistException("Internet Package with Name:"+tariffPlanDto.getTariffPlan().getName()+" conflict with other internet package plan name.",e.getCause());
+            throw new EntityAlreadyExistException("Internet Package with Name: "+tariffPlanDto.getTariffPlan().getName()+" conflict with other internet package plan name.",e.getCause());
         }
         return objectMapper.convertValue(updateInterPackage, InternetPackageDTO.class);
     }
@@ -99,7 +101,10 @@ public class InternetTariffPlanServiceImpl implements InternetTariffPlanService 
                 .join()
                 .orElseThrow(() -> new NotFoundException(NOTFOUND + id));
         CompletableFuture.runAsync(()->tariffPlanRepository.delete(tariffPlan));
-        return Map.of("message", "Internet tariff package with ID: " + id+ "deleted successfully");
+        return Map.of("message", "Internet tariff package with ID: " + id+ " deleted successfully");
     }
-
+    @Override
+    public Page<InternetPackage> searchByTariffPlanName(String tariffPlanName, Pageable pageable) {
+        return tariffPlanRepository.findByTariffPlanNameContainingIgnoreCase(tariffPlanName, pageable);
+    }
 }
