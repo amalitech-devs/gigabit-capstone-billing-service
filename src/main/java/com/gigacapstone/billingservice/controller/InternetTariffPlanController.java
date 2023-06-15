@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -37,7 +38,11 @@ public class InternetTariffPlanController {
         InternetPackageDTO createdTariffPlan = tariffPlanService.updateTariffPlanById(id,tariffPlanDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTariffPlan);
     }
-
+    @GetMapping("/search")
+    public ResponseEntity<Page<InternetPackage>> searchByTariffPlanName(@RequestParam String name, Pageable pageable) {
+        Page<InternetPackage> searchResults = tariffPlanService.searchByTariffPlanName(name, pageable);
+        return ResponseEntity.ok(searchResults);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<InternetPackageDTO> getTariffPlanById(@PathVariable("id") UUID id) {
         InternetPackageDTO tariffPlan = tariffPlanService.getTariffPlanById(id);
