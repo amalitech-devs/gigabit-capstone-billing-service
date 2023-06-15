@@ -70,7 +70,6 @@ public class TariffServiceImpl implements TariffService {
     @Override
     public Page<VoicePackageDTO> listAllVoicePackages(Pageable pageable) {
         Page<VoicePackage> voicePackages = tariffRepository.findVoicePackages(pageable);
-        CompletableFuture.supplyAsync(tariffRepository.findVoicePackages(pageable));
         return voicePackages.map(voice -> mapper.convertValue(voice, VoicePackageDTO.class));
     }
 
