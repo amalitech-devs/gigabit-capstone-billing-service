@@ -19,4 +19,8 @@ public interface TariffService {
     Page<VoicePackageDTO> listAllVoicePackages(Pageable pageable);
 
     AllPackagesDTO listAllPackages(Pageable pageable);
+
+    Page<VoicePackageDTO> searchVoicePackage(String packageName, Pageable pageable);
+
+    Page<BundlePackageDTO> searchBundlePackage(String packageName, Pageable pageable);
 }

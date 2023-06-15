@@ -20,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -104,6 +103,18 @@ public class TariffServiceImpl implements TariffService {
                 .toList();
 
        return new AllPackagesDTO(voicePackageDTOs, bundlePackageDTOs, internetPackageDTOs);
+    }
+
+    @Override
+    public Page<VoicePackageDTO> searchVoicePackage(String packageName, Pageable pageable) {
+        Page<VoicePackage> voicePackages = tariffRepository.searchVoicePackages(packageName, pageable);
+        return voicePackages.map(voicePackage -> mapper.convertValue(voicePackage, VoicePackageDTO.class));
+    }
+
+    @Override
+    public Page<BundlePackageDTO> searchBundlePackage(String packageName, Pageable pageable) {
+        Page<BundlePackage> bundlePackages = tariffRepository.searchBundlePackages(packageName, pageable);
+        return bundlePackages.map(bundlePackage -> mapper.convertValue(bundlePackage, BundlePackageDTO.class));
     }
 
     public boolean doesPackageAlreadyExist(String packageName) {
