@@ -1,6 +1,8 @@
 package com.gigacapstone.billingservice.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -13,9 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @ControllerAdvice
 public class GlobalEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -54,6 +54,20 @@ public class GlobalEntityExceptionHandler extends ResponseEntityExceptionHandler
 
         }
         return new ResponseEntity<>("invalid request body", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        List<String> errorMessages = new ArrayList<>();
+
+        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+            errorMessages.add(violation.getMessage());
+        }
+
+        errorResponse.put("messages", errorMessages);
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @Override

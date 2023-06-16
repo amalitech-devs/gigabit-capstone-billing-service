@@ -24,14 +24,13 @@ public class TariffPlan {
     @Column(unique = true)
     private String name;
 
-    @Positive(message = "price must be a positive value")
+    @Positive
     private Double price;
 
     private Boolean isEnabled;
 
     private Boolean isVatApplied;
 
-    @Positive
     private Integer vatPercentage;
 
     @Enumerated(EnumType.STRING)
