@@ -40,7 +40,8 @@ public class TariffServiceImpl implements TariffService {
             throw new EntityAlreadyExistException("Package Name already exists");
         }
         voicePackage.setIsEnabled(false);
-        tariffRepository.save(mapper.convertValue(voicePackage, VoicePackage.class));
+        VoicePackage theVoicePackageToBeSaved = mapper.convertValue(voicePackage, VoicePackage.class);
+        tariffRepository.save(theVoicePackageToBeSaved);
 
         return voicePackage;
     }
