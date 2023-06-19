@@ -20,12 +20,23 @@ import java.util.*;
 @ControllerAdvice
 public class GlobalEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private static final String MESSAGE_KEY = "message";
+    private static final String STATUS_KEY = "status";
+
     @ExceptionHandler({EntityAlreadyExistException.class})
     protected ResponseEntity<Object> handleEntityAlreadyExistsException(EntityAlreadyExistException ex){
         Map<String, Object> error = new HashMap<>();
-        error.put("message", ex.getMessage());
-        error.put("status", HttpStatus.CONFLICT.value());
+        error.put(MESSAGE_KEY, ex.getMessage());
+        error.put(STATUS_KEY, HttpStatus.CONFLICT.value());
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler({NotFoundException.class})
+    protected ResponseEntity<Object> handleEntityNotFoundException(NotFoundException ex){
+        Map<String, Object> error = new HashMap<>();
+        error.put(MESSAGE_KEY, ex.getMessage());
+        error.put(STATUS_KEY, HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     protected ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, WebRequest request){
@@ -47,8 +58,8 @@ public class GlobalEntityExceptionHandler extends ResponseEntityExceptionHandler
                 String validValues = Arrays.toString(invalidFormatException.getTargetType().getEnumConstants());
                 String errorMessage = String.format("Invalid value %s for enum type %s. Valid values are %s",
                         invalidValue,invalidFormatException.getTargetType().getSimpleName(),validValues);
-                error.put("message", errorMessage);
-                error.put("status", HttpStatus.BAD_REQUEST);
+                error.put(MESSAGE_KEY, errorMessage);
+                error.put(STATUS_KEY, HttpStatus.BAD_REQUEST);
 
                 return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 
