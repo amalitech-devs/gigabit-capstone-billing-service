@@ -32,7 +32,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .orElseThrow(() -> new NotFoundException("tariff plan not found"));
         LocalDate expiryDate = getExpiryDate(tariffPlan);
         subscriptionDTO.setExpiryDate(expiryDate);
-        subscriptionRepository.save(mapper.convertValue(subscriptionDTO, Subscription.class));
+
+        Subscription subscription = mapper.convertValue(subscriptionDTO, Subscription.class);
+        subscription.setStatus(CURRENT_STATUS);
+        subscriptionRepository.save(subscription);
         return subscriptionDTO;
     }
 
