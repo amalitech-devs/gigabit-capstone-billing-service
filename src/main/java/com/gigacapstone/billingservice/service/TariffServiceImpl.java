@@ -8,6 +8,7 @@ import com.gigacapstone.billingservice.dto.VoicePackageDTO;
 import com.gigacapstone.billingservice.exception.EntityAlreadyExistException;
 import com.gigacapstone.billingservice.model.BundlePackage;
 import com.gigacapstone.billingservice.model.InternetPackage;
+import com.gigacapstone.billingservice.model.TariffPlan;
 import com.gigacapstone.billingservice.model.VoicePackage;
 import com.gigacapstone.billingservice.repository.InternetTariffPlanRepository;
 import com.gigacapstone.billingservice.repository.TariffRepository;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -34,11 +36,11 @@ public class TariffServiceImpl implements TariffService {
         if (voicePackage == null) {
             throw new IllegalArgumentException("Input voice package cannot be null");
         }
-
-        if (doesPackageAlreadyExist(voicePackage.getName())) {
-            //Implement logic to check the actual type of package that exists and return message to user
-            throw new EntityAlreadyExistException("Package Name already exists");
+        Optional<TariffPlan> tarriffPlan = tariffRepository.findTariffPlanByName(voicePackage.getName());
+        if (tarriffPlan.isPresent() && tarriffPlan.get() instanceof VoicePackage) {
+            throw new EntityAlreadyExistException("voice package already exists with such name");
         }
+
         voicePackage.setIsEnabled(false);
         VoicePackage theVoicePackageToBeSaved = mapper.convertValue(voicePackage, VoicePackage.class);
         tariffRepository.save(theVoicePackageToBeSaved);
@@ -52,8 +54,9 @@ public class TariffServiceImpl implements TariffService {
             throw new IllegalArgumentException("Input voice package cannot be null");
         }
 
-        if (doesPackageAlreadyExist(bundlePackage.getName())) {
-            throw new EntityAlreadyExistException("Package Name already exists");
+        Optional<TariffPlan> tarriffPlan = tariffRepository.findTariffPlanByName(bundlePackage.getName());
+        if (tarriffPlan.isPresent() && tarriffPlan.get() instanceof BundlePackage) {
+            throw new EntityAlreadyExistException("bundle package already exists with such name");
         }
         bundlePackage.setIsEnabled(false);
         tariffRepository.save(mapper.convertValue(bundlePackage, BundlePackage.class));
@@ -116,9 +119,5 @@ public class TariffServiceImpl implements TariffService {
     public Page<BundlePackageDTO> searchBundlePackage(String packageName, Pageable pageable) {
         Page<BundlePackage> bundlePackages = tariffRepository.searchBundlePackages(packageName, pageable);
         return bundlePackages.map(bundlePackage -> mapper.convertValue(bundlePackage, BundlePackageDTO.class));
-    }
-
-    public boolean doesPackageAlreadyExist(String packageName) {
-        return tariffRepository.findTariffPlanByName(packageName).isPresent();
     }
 }
