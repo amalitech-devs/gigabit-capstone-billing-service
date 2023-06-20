@@ -8,10 +8,11 @@ import com.gigacapstone.billingservice.dto.VoicePackageDTO;
 import com.gigacapstone.billingservice.exception.EntityAlreadyExistException;
 import com.gigacapstone.billingservice.model.BundlePackage;
 import com.gigacapstone.billingservice.model.InternetPackage;
-import com.gigacapstone.billingservice.model.TariffPlan;
 import com.gigacapstone.billingservice.model.VoicePackage;
+import com.gigacapstone.billingservice.repository.BundlePackageRepository;
 import com.gigacapstone.billingservice.repository.InternetTariffPlanRepository;
 import com.gigacapstone.billingservice.repository.TariffRepository;
+import com.gigacapstone.billingservice.repository.VoicePackageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,14 +31,16 @@ public class TariffServiceImpl implements TariffService {
     private final TariffRepository tariffRepository;
     private final ObjectMapper mapper;
     private final InternetTariffPlanRepository internetTariffPlanRepository;
+    private final VoicePackageRepository voicePackageRepository;
+    private final BundlePackageRepository bundlePackageRepository;
 
     @Override
     public VoicePackageDTO createVoicePackage(VoicePackageDTO voicePackage) {
         if (voicePackage == null) {
             throw new IllegalArgumentException("Input voice package cannot be null");
         }
-        Optional<TariffPlan> tarriffPlan = tariffRepository.findTariffPlanByName(voicePackage.getName());
-        if (tarriffPlan.isPresent() && tarriffPlan.get() instanceof VoicePackage) {
+        Optional<VoicePackage> tarriffPlan = voicePackageRepository.findVoicePackageByName(voicePackage.getName());
+        if (tarriffPlan.isPresent()) {
             throw new EntityAlreadyExistException("voice package already exists with such name");
         }
 
@@ -54,8 +57,8 @@ public class TariffServiceImpl implements TariffService {
             throw new IllegalArgumentException("Input voice package cannot be null");
         }
 
-        Optional<TariffPlan> tarriffPlan = tariffRepository.findTariffPlanByName(bundlePackage.getName());
-        if (tarriffPlan.isPresent() && tarriffPlan.get() instanceof BundlePackage) {
+        Optional<BundlePackage> tarriffPlan = bundlePackageRepository.findBundlePackageByName(bundlePackage.getName());
+        if (tarriffPlan.isPresent()) {
             throw new EntityAlreadyExistException("bundle package already exists with such name");
         }
         bundlePackage.setIsEnabled(false);

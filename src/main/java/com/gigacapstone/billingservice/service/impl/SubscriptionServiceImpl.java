@@ -3,17 +3,23 @@ package com.gigacapstone.billingservice.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gigacapstone.billingservice.dto.SubscriptionDTO;
 import com.gigacapstone.billingservice.enums.ExpirationRate;
+import com.gigacapstone.billingservice.enums.TariffType;
 import com.gigacapstone.billingservice.exception.NotFoundException;
+import com.gigacapstone.billingservice.model.BundlePackage;
 import com.gigacapstone.billingservice.model.Subscription;
 import com.gigacapstone.billingservice.model.TariffPlan;
+import com.gigacapstone.billingservice.model.VoicePackage;
+import com.gigacapstone.billingservice.repository.BundlePackageRepository;
 import com.gigacapstone.billingservice.repository.SubscriptionRepository;
 import com.gigacapstone.billingservice.repository.TariffRepository;
+import com.gigacapstone.billingservice.repository.VoicePackageRepository;
 import com.gigacapstone.billingservice.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -21,6 +27,8 @@ import java.util.UUID;
 public class SubscriptionServiceImpl implements SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
+    private final BundlePackageRepository bundlePackageRepository;
+    private final VoicePackageRepository voicePackageRepository;
     private final ObjectMapper mapper;
     private final TariffRepository tariffRepository;
 
@@ -28,8 +36,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private static final String CURRENT_STATUS = "current";
     @Override
     public SubscriptionDTO createSubscription(SubscriptionDTO subscriptionDTO) {
-        TariffPlan tariffPlan = tariffRepository.findTariffPlanByName(subscriptionDTO.getTariffName())
-                .orElseThrow(() -> new NotFoundException("tariff plan not found"));
+        TariffPlan tariffPlan = getTariffPlan(subscriptionDTO);
         LocalDate expiryDate = getExpiryDate(tariffPlan);
         subscriptionDTO.setExpiryDate(expiryDate);
 
@@ -70,5 +77,18 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             }
             subscription.setStatus(CURRENT_STATUS);
         }
+    }
+
+    private TariffPlan getTariffPlan(SubscriptionDTO subscriptionDTO){
+        if (subscriptionDTO.getType() == TariffType.VOICE){
+            VoicePackage voicePackageByName = voicePackageRepository.findVoicePackageByName(subscriptionDTO.getTariffName())
+                    .orElseThrow(() -> new NotFoundException("no voice package found with such name"));
+            return voicePackageByName;
+        } else if (subscriptionDTO.getType() == TariffType.BUNDLE) {
+            BundlePackage bundlePackage = bundlePackageRepository.findBundlePackageByName(subscriptionDTO.getTariffName())
+                    .orElseThrow(() -> new NotFoundException("no bundle package found with such name"));
+            return bundlePackage;
+        }
+        throw new NotFoundException("No package found with such name");
     }
 }
