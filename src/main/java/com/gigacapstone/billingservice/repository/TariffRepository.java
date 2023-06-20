@@ -9,12 +9,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
-public interface TariffRepository extends JpaRepository<TariffPlan, Long> {
+public interface TariffRepository extends JpaRepository<TariffPlan, Integer> {
 
-    Optional<TariffPlan> findTariffPlanByName(String name);
+    List<TariffPlan> findTariffPlansByName(String name);
 
     @Query("SELECT bp FROM BundlePackage bp")
     Page<BundlePackage> findBundlePackages(Pageable pageable);
