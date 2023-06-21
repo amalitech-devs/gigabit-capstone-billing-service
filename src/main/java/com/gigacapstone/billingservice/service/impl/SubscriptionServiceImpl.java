@@ -81,13 +81,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     private TariffPlan getTariffPlan(SubscriptionDTO subscriptionDTO){
         if (subscriptionDTO.getType() == TariffType.VOICE){
-            VoicePackage voicePackageByName = voicePackageRepository.findVoicePackageByName(subscriptionDTO.getTariffName())
+            return  voicePackageRepository.findVoicePackageByName(subscriptionDTO.getTariffName())
                     .orElseThrow(() -> new NotFoundException("no voice package found with such name"));
-            return voicePackageByName;
         } else if (subscriptionDTO.getType() == TariffType.BUNDLE) {
-            BundlePackage bundlePackage = bundlePackageRepository.findBundlePackageByName(subscriptionDTO.getTariffName())
+            return bundlePackageRepository.findBundlePackageByName(subscriptionDTO.getTariffName())
                     .orElseThrow(() -> new NotFoundException("no bundle package found with such name"));
-            return bundlePackage;
         }
         throw new NotFoundException("No package found with such name");
     }
