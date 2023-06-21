@@ -5,10 +5,8 @@ import com.gigacapstone.billingservice.dto.SubscriptionDTO;
 import com.gigacapstone.billingservice.enums.ExpirationRate;
 import com.gigacapstone.billingservice.enums.TariffType;
 import com.gigacapstone.billingservice.exception.NotFoundException;
-import com.gigacapstone.billingservice.model.BundlePackage;
 import com.gigacapstone.billingservice.model.Subscription;
 import com.gigacapstone.billingservice.model.TariffPlan;
-import com.gigacapstone.billingservice.model.VoicePackage;
 import com.gigacapstone.billingservice.repository.BundlePackageRepository;
 import com.gigacapstone.billingservice.repository.SubscriptionRepository;
 import com.gigacapstone.billingservice.repository.TariffRepository;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,7 +27,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final BundlePackageRepository bundlePackageRepository;
     private final VoicePackageRepository voicePackageRepository;
     private final ObjectMapper mapper;
-    private final TariffRepository tariffRepository;
 
     private static final String EXPIRED_STATUS = "expired";
     private static final String CURRENT_STATUS = "current";
