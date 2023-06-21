@@ -13,14 +13,11 @@ import java.util.List;
 
 @Repository
 public interface TariffRepository extends JpaRepository<TariffPlan, Integer> {
-
-    List<TariffPlan> findTariffPlansByName(String name);
-
     @Query("SELECT bp FROM BundlePackage bp")
-    Page<BundlePackage> findBundlePackages(Pageable pageable);
+    List<BundlePackage> findBundlePackages();
 
     @Query("SELECT vp FROM VoicePackage vp")
-    Page<VoicePackage> findVoicePackages(Pageable pageable);
+    List<VoicePackage> findVoicePackages();
 
     @Query("SELECT vp FROM VoicePackage vp WHERE vp.name LIKE  %:packageName%")
     Page<VoicePackage> searchVoicePackages(String packageName, Pageable pageable);

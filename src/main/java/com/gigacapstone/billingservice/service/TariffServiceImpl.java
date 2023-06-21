@@ -23,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -69,21 +70,21 @@ public class TariffServiceImpl implements TariffService {
 
     @Override
     public Page<BundlePackageDTO> listAllBundlePackages(Pageable pageable) {
-        Page<BundlePackage> bundlePackages = tariffRepository.findBundlePackages(pageable);
+        Page<BundlePackage> bundlePackages = bundlePackageRepository.findAll(pageable);
         return bundlePackages.map(bundle -> mapper.convertValue(bundle, BundlePackageDTO.class));
     }
 
     @Override
     public Page<VoicePackageDTO> listAllVoicePackages(Pageable pageable) {
-        Page<VoicePackage> voicePackages = tariffRepository.findVoicePackages(pageable);
+        Page<VoicePackage> voicePackages = voicePackageRepository.findAll(pageable);
         return voicePackages.map(voice -> mapper.convertValue(voice, VoicePackageDTO.class));
     }
 
     @Override
-    public AllPackagesDTO listAllPackages(Pageable pageable) {
-        var voicePackageFuture = CompletableFuture.supplyAsync(() -> tariffRepository.findVoicePackages(pageable));
-        var internetPackageFuture = CompletableFuture.supplyAsync(() -> internetTariffPlanRepository.findAll(pageable));
-        var bundlePackageFuture = CompletableFuture.supplyAsync(() -> tariffRepository.findBundlePackages(pageable));
+    public AllPackagesDTO listAllPackages() {
+        var voicePackageFuture = CompletableFuture.supplyAsync(tariffRepository::findVoicePackages);
+        var internetPackageFuture = CompletableFuture.supplyAsync(internetTariffPlanRepository::findAll);
+        var bundlePackageFuture = CompletableFuture.supplyAsync(tariffRepository::findBundlePackages);
 
         CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(voicePackageFuture, internetPackageFuture, bundlePackageFuture);
 
@@ -93,19 +94,19 @@ public class TariffServiceImpl implements TariffService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "could not fetch packages");
         }
 
-        Page<VoicePackage> voicePackagePage = voicePackageFuture.join();
-        Page<InternetPackage> internetPackagePage = internetPackageFuture.join();
-        Page<BundlePackage> bundlePackagePage = bundlePackageFuture.join();
+        List<VoicePackage> voicePackages = voicePackageFuture.join();
+        Iterable<InternetPackage> internetPackages = internetPackageFuture.join();
+        List<BundlePackage> bundlePackages = bundlePackageFuture.join();
 
-        List<VoicePackageDTO> voicePackageDTOs = voicePackagePage.getContent().stream()
+        List<VoicePackageDTO> voicePackageDTOs = voicePackages.stream()
                 .map(voicePackage -> mapper.convertValue(voicePackage, VoicePackageDTO.class))
                 .toList();
 
-        List<BundlePackageDTO> bundlePackageDTOs = bundlePackagePage.getContent().stream()
+        List<BundlePackageDTO> bundlePackageDTOs = bundlePackages.stream()
                 .map(bundlePackage -> mapper.convertValue(bundlePackage, BundlePackageDTO.class))
                 .toList();
 
-        List<InternetPackageDTO> internetPackageDTOs = internetPackagePage.getContent().stream()
+        List<InternetPackageDTO> internetPackageDTOs = StreamSupport.stream(internetPackages.spliterator(), false)
                 .map(internetPackage -> mapper.convertValue(internetPackage, InternetPackageDTO.class))
                 .toList();
 
