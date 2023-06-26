@@ -23,7 +23,6 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-
 class InternetTariffPlanServiceImplTest {
 
     @Mock
@@ -128,7 +127,7 @@ class InternetTariffPlanServiceImplTest {
     }
 
     @Test
-    public void testSearchByTariffPlanName_ValidName_ReturnsMatchingTariffPlans() {
+    void testSearchByTariffPlanName_ValidName_ReturnsMatchingTariffPlans() {
         MockitoAnnotations.openMocks(this);
 
         // Mocking the repository
@@ -149,7 +148,7 @@ class InternetTariffPlanServiceImplTest {
     }
 
     @Test
-    public void testSearchByTariffPlanName_NoMatchingName_ReturnsEmptyPage() {
+    void testSearchByTariffPlanName_NoMatchingName_ReturnsEmptyPage() {
         MockitoAnnotations.openMocks(this);
 
         // Mocking the repository

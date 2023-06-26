@@ -7,10 +7,7 @@ import com.gigacapstone.billingservice.enums.TariffType;
 import com.gigacapstone.billingservice.exception.NotFoundException;
 import com.gigacapstone.billingservice.model.Subscription;
 import com.gigacapstone.billingservice.model.TariffPlan;
-import com.gigacapstone.billingservice.repository.BundlePackageRepository;
-import com.gigacapstone.billingservice.repository.SubscriptionRepository;
-import com.gigacapstone.billingservice.repository.TariffRepository;
-import com.gigacapstone.billingservice.repository.VoicePackageRepository;
+import com.gigacapstone.billingservice.repository.*;
 import com.gigacapstone.billingservice.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +23,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final BundlePackageRepository bundlePackageRepository;
     private final VoicePackageRepository voicePackageRepository;
+    private final InternetTariffPlanRepository tariffPlanRepository;
     private final ObjectMapper mapper;
 
     private static final String EXPIRED_STATUS = "expired";
@@ -33,7 +31,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public SubscriptionDTO createSubscription(SubscriptionDTO subscriptionDTO) {
         TariffPlan tariffPlan = getTariffPlan(subscriptionDTO);
-        LocalDate expiryDate = getExpiryDate(tariffPlan);
+        LocalDate expiryDate = getExpiryDate(tariffPlan.getExpirationRate());
         subscriptionDTO.setExpiryDate(expiryDate);
 
         Subscription subscription = mapper.convertValue(subscriptionDTO, Subscription.class);
@@ -51,16 +49,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .toList();
     }
 
-    private LocalDate getExpiryDate(TariffPlan tariffPlan){
-        if (tariffPlan.getExpirationRate() == ExpirationRate.ONE_WEEK){
+    private LocalDate getExpiryDate(ExpirationRate expirationRate){
+        if (expirationRate == ExpirationRate.ONE_WEEK){
             return LocalDate.now().plusWeeks(1);
-        } else if (tariffPlan.getExpirationRate() == ExpirationRate.TWO_WEEKS) {
+        } else if (expirationRate == ExpirationRate.TWO_WEEKS) {
             return LocalDate.now().plusWeeks(2);
-        } else if (tariffPlan.getExpirationRate() == ExpirationRate.ONE_MONTH) {
+        } else if (expirationRate == ExpirationRate.ONE_MONTH) {
             return LocalDate.now().plusMonths(1);
-        } else if (tariffPlan.getExpirationRate() == ExpirationRate.ONE_YEAR) {
+        } else if (expirationRate == ExpirationRate.ONE_YEAR) {
             return LocalDate.now().plusYears(1);
-        } else if (tariffPlan.getExpirationRate() == ExpirationRate.PERMANENT) {
+        } else if (expirationRate == ExpirationRate.PERMANENT) {
             return LocalDate.now().plusYears(100);
         }
         return LocalDate.now();
@@ -70,6 +68,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         for(Subscription subscription : subscriptions){
             if(subscription.getExpiryDate().isBefore(LocalDate.now())){
                 subscription.setStatus(EXPIRED_STATUS);
+                continue;
             }
             subscription.setStatus(CURRENT_STATUS);
         }
@@ -82,7 +81,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         } else if (subscriptionDTO.getType() == TariffType.BUNDLE) {
             return bundlePackageRepository.findBundlePackageByName(subscriptionDTO.getTariffName())
                     .orElseThrow(() -> new NotFoundException("no bundle package found with such name"));
+        } else if (subscriptionDTO.getType() == TariffType.INTERNET) {
+            return tariffPlanRepository.findByTariffPlanName(subscriptionDTO.getTariffName())
+                    .orElseThrow(() -> new NotFoundException("no bundle package found with such name"))
+                    .getTariffPlan();
         }
+
         throw new NotFoundException("No package found with such name");
     }
 }
