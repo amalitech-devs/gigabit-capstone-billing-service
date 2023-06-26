@@ -9,18 +9,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
-public interface TariffRepository extends JpaRepository<TariffPlan, Long> {
-
-    Optional<TariffPlan> findTariffPlanByName(String name);
-
+public interface TariffRepository extends JpaRepository<TariffPlan, Integer> {
     @Query("SELECT bp FROM BundlePackage bp")
-    Page<BundlePackage> findBundlePackages(Pageable pageable);
+    List<BundlePackage> findBundlePackages();
 
     @Query("SELECT vp FROM VoicePackage vp")
-    Page<VoicePackage> findVoicePackages(Pageable pageable);
+    List<VoicePackage> findVoicePackages();
 
     @Query("SELECT vp FROM VoicePackage vp WHERE vp.name LIKE  %:packageName%")
     Page<VoicePackage> searchVoicePackages(String packageName, Pageable pageable);

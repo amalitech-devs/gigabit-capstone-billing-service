@@ -44,8 +44,8 @@ public class TariffPlanController {
 
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    AllPackagesDTO getAllPackages(Pageable pageable) {
-        return tariffService.listAllPackages(pageable);
+    AllPackagesDTO getAllPackages() {
+        return tariffService.listAllPackages();
     }
 
     @GetMapping("/voice/search")
