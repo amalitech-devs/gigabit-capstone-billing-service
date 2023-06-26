@@ -16,11 +16,9 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import static java.util.concurrent.CompletableFuture.*;
 
@@ -103,8 +101,10 @@ public class InternetTariffPlanServiceImpl implements InternetTariffPlanService 
         CompletableFuture.runAsync(()->tariffPlanRepository.delete(tariffPlan));
         return Map.of("message", "Internet tariff package with ID: " + id+ " deleted successfully");
     }
+
     @Override
     public Page<InternetPackage> searchByTariffPlanName(String tariffPlanName, Pageable pageable) {
         return tariffPlanRepository.findByTariffPlanNameContainingIgnoreCase(tariffPlanName, pageable);
     }
+
 }

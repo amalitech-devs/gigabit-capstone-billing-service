@@ -13,8 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -122,5 +125,46 @@ class InternetTariffPlanServiceImplTest {
 
         // Act & Assert
         assertThrows(NotFoundException.class, () -> tariffPlanService.deleteTariffPlan(id));
+    }
+
+    @Test
+    public void testSearchByTariffPlanName_ValidName_ReturnsMatchingTariffPlans() {
+        MockitoAnnotations.openMocks(this);
+
+        // Mocking the repository
+        String tariffPlanName = "Internet Package";
+        Pageable pageable = Pageable.ofSize(10).withPage(0);
+        List<InternetPackage> mockedTariffPlans = Collections.singletonList(new InternetPackage());
+        Page<InternetPackage> mockedPage = new PageImpl<>(mockedTariffPlans, pageable, 1);
+        when(tariffPlanRepository.findByTariffPlanNameContainingIgnoreCase(tariffPlanName, pageable)).thenReturn(mockedPage);
+
+        // Creating the service and invoking the method
+        InternetTariffPlanServiceImpl tariffPlanService = new InternetTariffPlanServiceImpl(tariffPlanRepository, new ObjectMapper());
+        Page<InternetPackage> result = tariffPlanService.searchByTariffPlanName(tariffPlanName, pageable);
+
+        // Asserting the result
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(mockedTariffPlans, result.getContent());
+    }
+
+    @Test
+    public void testSearchByTariffPlanName_NoMatchingName_ReturnsEmptyPage() {
+        MockitoAnnotations.openMocks(this);
+
+        // Mocking the repository
+        String tariffPlanName = "Internet Package";
+        Pageable pageable = Pageable.ofSize(10).withPage(0);
+        Page<InternetPackage> mockedPage = new PageImpl<>(Collections.emptyList(), pageable, 0);
+        when(tariffPlanRepository.findByTariffPlanNameContainingIgnoreCase(tariffPlanName, pageable)).thenReturn(mockedPage);
+
+        // Creating the service and invoking the method
+        InternetTariffPlanServiceImpl tariffPlanService = new InternetTariffPlanServiceImpl(tariffPlanRepository, new ObjectMapper());
+        Page<InternetPackage> result = tariffPlanService.searchByTariffPlanName(tariffPlanName, pageable);
+
+        // Asserting the result
+        assertNotNull(result);
+        assertEquals(0, result.getTotalElements());
+        assertTrue(result.getContent().isEmpty());
     }
 }
