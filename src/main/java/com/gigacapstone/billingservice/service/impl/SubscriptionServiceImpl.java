@@ -83,7 +83,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                     .orElseThrow(() -> new NotFoundException("no bundle package found with such name"));
         } else if (subscriptionDTO.getType() == TariffType.INTERNET) {
             return tariffPlanRepository.findByTariffPlanName(subscriptionDTO.getTariffName())
-                    .orElseThrow(() -> new NotFoundException("no bundle package found with such name"))
+                    .orElseThrow(() -> new NotFoundException("no internet package found with such name"))
                     .getTariffPlan();
         }
 
