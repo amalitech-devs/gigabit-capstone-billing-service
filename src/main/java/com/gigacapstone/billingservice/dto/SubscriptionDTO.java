@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -17,4 +18,6 @@ public class SubscriptionDTO {
     private String status;
     private UUID userId;
     private TariffType type;
+    private Timestamp createdAt;
+    private Timestamp updatedAt;
 }
