@@ -10,4 +10,6 @@ public interface SubscriptionService {
     SubscriptionDTO createSubscription(SubscriptionDTO subscriptionDTO);
 
     List<SubscriptionDTO> getAllSubscriptionsOfUser(UUID userId);
+
+    void deleteSubscription(UUID id);
 }

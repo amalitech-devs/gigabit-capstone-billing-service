@@ -32,12 +32,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public SubscriptionDTO createSubscription(SubscriptionDTO subscriptionDTO) {
         TariffPlan tariffPlan = getTariffPlan(subscriptionDTO);
         LocalDate expiryDate = getExpiryDate(tariffPlan.getExpirationRate());
-        subscriptionDTO.setExpiryDate(expiryDate);
+
 
         Subscription subscription = mapper.convertValue(subscriptionDTO, Subscription.class);
+        subscription.setExpiryDate(expiryDate);
         subscription.setStatus(CURRENT_STATUS);
-        subscriptionRepository.save(subscription);
-        return subscriptionDTO;
+        Subscription savedSubscription = subscriptionRepository.save(subscription);
+        return mapper.convertValue(savedSubscription, SubscriptionDTO.class);
     }
 
     @Override
@@ -47,6 +48,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return subscriptions.stream()
                 .map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class))
                 .toList();
+    }
+
+    @Override
+    public void deleteSubscription(UUID id) {
+        subscriptionRepository.deleteById(id);
     }
 
     private LocalDate getExpiryDate(ExpirationRate expirationRate){
