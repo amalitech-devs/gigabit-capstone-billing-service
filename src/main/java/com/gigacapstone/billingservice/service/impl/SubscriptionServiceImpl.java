@@ -32,6 +32,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     private static final String EXPIRED_STATUS = "expired";
     private static final String CURRENT_STATUS = "current";
+
     @Override
     public SubscriptionDTO createSubscription(SubscriptionDTO subscriptionDTO) {
         TariffPlan tariffPlan = getTariffPlan(subscriptionDTO);
@@ -44,15 +45,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         Subscription savedSubscription = subscriptionRepository.save(subscription);
         return mapper.convertValue(savedSubscription, SubscriptionDTO.class);
-
-        subscription.setCreatedAt(new Timestamp(new Date().getTime()));
-        Subscription save = subscriptionRepository.save(subscription);
-        return mapper.convertValue(save,SubscriptionDTO.class);
     }
 
     @Override
     public List<SubscriptionDTO> getAllSubscriptionsOfUser(UUID userId, Pageable pageable) {
-        Page<Subscription> subscriptions = subscriptionRepository.findAllByUserId(userId,pageable);
+        Page<Subscription> subscriptions = subscriptionRepository.findAllByUserId(userId, pageable);
         setStatusOfSubscriptions(subscriptions);
         return subscriptions.stream()
                 .map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class))
@@ -65,21 +62,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscriptionRepository.deleteById(id);
     }
 
-    private LocalDate getExpiryDate(ExpirationRate expirationRate){
-        if (expirationRate == ExpirationRate.ONE_WEEK){
-            return LocalDate.now().plusWeeks(1);
-        } else if (expirationRate == ExpirationRate.TWO_WEEKS) {
-            return LocalDate.now().plusWeeks(2);
-        } else if (expirationRate == ExpirationRate.ONE_MONTH) {
-            return LocalDate.now().plusMonths(1);
-        } else if (expirationRate == ExpirationRate.ONE_YEAR) {
-            return LocalDate.now().plusYears(1);
-        } else if (expirationRate == ExpirationRate.PERMANENT) {
-            return LocalDate.now().plusYears(100);
-        }
-        return LocalDate.now();
-
-    private LocalDate getExpiryDate(ExpirationRate expirationRate) {
+    private LocalDate getExpiryDate (ExpirationRate expirationRate){
         LocalDate currentDate = LocalDate.now();
         return switch (expirationRate) {
             case ONE_WEEK -> currentDate.plusWeeks(1);
@@ -90,9 +73,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         };
 
     }
-    private void setStatusOfSubscriptions(Page<Subscription> subscriptions){
-        for(Subscription subscription : subscriptions){
-            if(subscription.getExpiryDate().isBefore(LocalDate.now())){
+
+    private void setStatusOfSubscriptions (Page<Subscription> subscriptions) {
+        for (Subscription subscription : subscriptions) {
+            if (subscription.getExpiryDate().isBefore(LocalDate.now())) {
                 subscription.setStatus(EXPIRED_STATUS);
                 continue;
             }
@@ -100,7 +84,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         }
     }
 
-    private TariffPlan getTariffPlan(SubscriptionDTO subscriptionDTO) {
+    private TariffPlan getTariffPlan (SubscriptionDTO subscriptionDTO){
         String tariffName = subscriptionDTO.getTariffName();
         return switch (subscriptionDTO.getType()) {
             case VOICE -> voicePackageRepository.findVoicePackageByName(tariffName)
