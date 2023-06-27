@@ -36,10 +36,15 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public SubscriptionDTO createSubscription(SubscriptionDTO subscriptionDTO) {
         TariffPlan tariffPlan = getTariffPlan(subscriptionDTO);
         LocalDate expiryDate = getExpiryDate(tariffPlan.getExpirationRate());
-        subscriptionDTO.setExpiryDate(expiryDate);
+
 
         Subscription subscription = mapper.convertValue(subscriptionDTO, Subscription.class);
+        subscription.setExpiryDate(expiryDate);
         subscription.setStatus(CURRENT_STATUS);
+
+        Subscription savedSubscription = subscriptionRepository.save(subscription);
+        return mapper.convertValue(savedSubscription, SubscriptionDTO.class);
+
         subscription.setCreatedAt(new Timestamp(new Date().getTime()));
         Subscription save = subscriptionRepository.save(subscription);
         return mapper.convertValue(save,SubscriptionDTO.class);
@@ -54,6 +59,26 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .toList();
     }
 
+
+    @Override
+    public void deleteSubscription(UUID id) {
+        subscriptionRepository.deleteById(id);
+    }
+
+    private LocalDate getExpiryDate(ExpirationRate expirationRate){
+        if (expirationRate == ExpirationRate.ONE_WEEK){
+            return LocalDate.now().plusWeeks(1);
+        } else if (expirationRate == ExpirationRate.TWO_WEEKS) {
+            return LocalDate.now().plusWeeks(2);
+        } else if (expirationRate == ExpirationRate.ONE_MONTH) {
+            return LocalDate.now().plusMonths(1);
+        } else if (expirationRate == ExpirationRate.ONE_YEAR) {
+            return LocalDate.now().plusYears(1);
+        } else if (expirationRate == ExpirationRate.PERMANENT) {
+            return LocalDate.now().plusYears(100);
+        }
+        return LocalDate.now();
+
     private LocalDate getExpiryDate(ExpirationRate expirationRate) {
         LocalDate currentDate = LocalDate.now();
         return switch (expirationRate) {
@@ -63,6 +88,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             case ONE_YEAR -> currentDate.plusYears(1);
             case PERMANENT -> currentDate.plusYears(100);
         };
+
     }
     private void setStatusOfSubscriptions(Page<Subscription> subscriptions){
         for(Subscription subscription : subscriptions){

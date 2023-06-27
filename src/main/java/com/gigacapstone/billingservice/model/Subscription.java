@@ -1,6 +1,7 @@
 package com.gigacapstone.billingservice.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gigacapstone.billingservice.enums.BillingType;
 import com.gigacapstone.billingservice.enums.TariffType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,6 +35,11 @@ public class Subscription {
 
     @Enumerated(EnumType.STRING)
     private TariffType type;
+
+    @Enumerated(EnumType.STRING)
+    private BillingType billingType;
+
     private Timestamp createdAt;
     private Timestamp updatedAt;
+
 }

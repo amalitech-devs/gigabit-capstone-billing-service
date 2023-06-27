@@ -29,4 +29,10 @@ public class SubscriptionController {
         return ResponseEntity.status(HttpStatus.SC_CREATED)
                 .body(subscriptionService.createSubscription(subscriptionDTO));
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+    void deleteSubscription(@PathVariable UUID id){
+        subscriptionService.deleteSubscription(id);
+    }
 }
