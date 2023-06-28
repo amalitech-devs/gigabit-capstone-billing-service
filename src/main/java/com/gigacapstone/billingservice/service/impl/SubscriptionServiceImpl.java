@@ -2,9 +2,11 @@ package com.gigacapstone.billingservice.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gigacapstone.billingservice.dto.SubscriptionDTO;
+import com.gigacapstone.billingservice.enums.BillingType;
 import com.gigacapstone.billingservice.enums.ExpirationRate;
 import com.gigacapstone.billingservice.enums.TariffType;
 import com.gigacapstone.billingservice.exception.NotFoundException;
+import com.gigacapstone.billingservice.exception.OperationFailedException;
 import com.gigacapstone.billingservice.model.Subscription;
 import com.gigacapstone.billingservice.model.TariffPlan;
 import com.gigacapstone.billingservice.repository.*;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -32,6 +35,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     private static final String EXPIRED_STATUS = "expired";
     private static final String CURRENT_STATUS = "current";
+    private static final String CANCELLED_STATUS = "cancelled";
 
     @Override
     public SubscriptionDTO createSubscription(SubscriptionDTO subscriptionDTO) {
@@ -56,6 +60,20 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 .toList();
     }
 
+    @Override
+    public void cancelSubscription(UUID id) {
+        Subscription subscription = subscriptionRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Subscription not found"));
+        if(subscription.getBillingType() == BillingType.AUTO_RENEWAL && LocalDate.now().isBefore(subscription.getExpiryDate())){
+            subscription.setStatus(CANCELLED_STATUS);
+            subscriptionRepository.save(subscription);
+        }
+        else{
+            throw new OperationFailedException("failed to cancel subscription");
+        }
+
+    }
+
 
     @Override
     public void deleteSubscription(UUID id) {
@@ -78,6 +96,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         for (Subscription subscription : subscriptions) {
             if (subscription.getExpiryDate().isBefore(LocalDate.now())) {
                 subscription.setStatus(EXPIRED_STATUS);
+                subscriptionRepository.save(subscription);
                 continue;
             }
             subscription.setStatus(CURRENT_STATUS);
