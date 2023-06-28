@@ -14,4 +14,6 @@ public interface SubscriptionService {
 
     List<SubscriptionDTO> getAllSubscriptionsOfUser(UUID userId, Pageable pageable);
 
+    void cancelSubscription(UUID id);
+
 }
