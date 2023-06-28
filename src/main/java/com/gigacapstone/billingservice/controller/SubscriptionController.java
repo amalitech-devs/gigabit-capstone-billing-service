@@ -35,4 +35,9 @@ public class SubscriptionController {
     void deleteSubscription(@PathVariable UUID id){
         subscriptionService.deleteSubscription(id);
     }
+
+    @PutMapping("/{id}")
+    void cancelSubscription(@PathVariable UUID id){
+        subscriptionService.cancelSubscription(id);
+    }
 }
