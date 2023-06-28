@@ -23,4 +23,5 @@ public interface TariffService {
     Page<VoicePackageDTO> searchVoicePackage(String packageName, Pageable pageable);
 
     Page<BundlePackageDTO> searchBundlePackage(String packageName, Pageable pageable);
+
 }
