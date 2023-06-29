@@ -2,6 +2,7 @@ package com.gigacapstone.billingservice.controller;
 
 import com.gigacapstone.billingservice.dto.SubscriptionDTO;
 import com.gigacapstone.billingservice.service.SubscriptionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.HttpStatus;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public class SubscriptionController {
     }
 
     @PostMapping
-    ResponseEntity<SubscriptionDTO> createSubscription(@RequestBody SubscriptionDTO subscriptionDTO){
+    ResponseEntity<SubscriptionDTO> createSubscription(@Valid @RequestBody SubscriptionDTO subscriptionDTO){
         return ResponseEntity.status(HttpStatus.SC_CREATED)
                 .body(subscriptionService.createSubscription(subscriptionDTO));
     }
