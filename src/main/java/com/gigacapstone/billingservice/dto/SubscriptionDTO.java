@@ -26,4 +26,8 @@ public class SubscriptionDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate expiryDate;
+
+    private Double downloadSpeed;
+    private Double dataSize;
+    private Double uploadSpeed;
 }
