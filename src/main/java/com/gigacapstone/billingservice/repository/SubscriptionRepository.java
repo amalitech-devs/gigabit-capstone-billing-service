@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface SubscriptionRepository extends JpaRepository<Subscription, UUID>{
 
-    Page<Subscription> findSubscriptionByUserId(UUID userId, Pageable pageable);
+    Page<Subscription> findSubscriptionsByUserId(UUID userId, Pageable pageable);
 
     @Query("SELECT s FROM Subscription s WHERE s.userId = :id AND LOWER(s.tariffName) LIKE %:tariffName%")
     Page<Subscription> searchForUserSubscription(UUID id, String tariffName, Pageable pageable);
