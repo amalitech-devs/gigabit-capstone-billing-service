@@ -16,4 +16,6 @@ public interface SubscriptionService {
 
     void cancelSubscription(UUID id);
 
+    Page<SubscriptionDTO> searchSubscriptionsByName(UUID id,String name, Pageable pageable);
+
 }

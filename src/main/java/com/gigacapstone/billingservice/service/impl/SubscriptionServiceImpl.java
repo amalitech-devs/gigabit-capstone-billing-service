@@ -70,6 +70,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     }
 
+    @Override
+    public Page<SubscriptionDTO> searchSubscriptionsByName(UUID id, String name, Pageable pageable) {
+        return subscriptionRepository.searchForUserSubscription(id, name, pageable)
+                .map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class));
+    }
 
     @Override
     public void deleteSubscription(UUID id) {
