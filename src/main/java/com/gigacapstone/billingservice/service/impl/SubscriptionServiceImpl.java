@@ -54,7 +54,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Page<SubscriptionDTO> getAllSubscriptionsOfUser(UUID userId, Pageable pageable) {
-        Page<Subscription> subscriptions = subscriptionRepository.findSubscriptionByUserId( userId, pageable);
+        Page<Subscription> subscriptions = subscriptionRepository.findSubscriptionsByUserId( userId, pageable);
         setStatusOfSubscriptions(subscriptions);
         Page<SubscriptionDTO> pageOfSubscriptions = subscriptions.map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class));
 
