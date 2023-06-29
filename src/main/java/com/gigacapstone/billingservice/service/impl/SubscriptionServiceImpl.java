@@ -3,7 +3,6 @@ package com.gigacapstone.billingservice.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gigacapstone.billingservice.dto.SubscriptionDTO;
 import com.gigacapstone.billingservice.enums.ExpirationRate;
-import com.gigacapstone.billingservice.enums.TariffType;
 import com.gigacapstone.billingservice.exception.NotFoundException;
 import com.gigacapstone.billingservice.model.Subscription;
 import com.gigacapstone.billingservice.model.TariffPlan;
@@ -18,6 +17,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -46,11 +46,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public List<SubscriptionDTO> getAllSubscriptionsOfUser(UUID userId, Pageable pageable) {
+    public List<SubscriptionDTO> getAllSubscriptionsOfUser(UUID userId, Optional<String> type, Pageable pageable) {
         Page<Subscription> subscriptions = subscriptionRepository.findAllByUserId(userId,pageable);
         setStatusOfSubscriptions(subscriptions);
         return subscriptions.stream()
-                .map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class))
+                .map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class)).filter(v->(type.isEmpty() || v.getType().name().equalsIgnoreCase(type.get())))
                 .toList();
     }
 

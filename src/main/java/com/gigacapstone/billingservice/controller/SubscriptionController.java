@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -19,9 +20,9 @@ public class SubscriptionController {
     private final SubscriptionService subscriptionService;
 
     @GetMapping("/{userId}")
-    ResponseEntity<List<SubscriptionDTO>> getAllSubscriptionForUser(@PathVariable UUID userId, Pageable pageable){
+    ResponseEntity<List<SubscriptionDTO>> getAllSubscriptionForUser(@PathVariable UUID userId, @RequestParam("type")Optional<String> type, Pageable pageable){
         return ResponseEntity
-                .ok(subscriptionService.getAllSubscriptionsOfUser(userId, pageable));
+                .ok(subscriptionService.getAllSubscriptionsOfUser(userId,type, pageable));
     }
 
     @PostMapping
