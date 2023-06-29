@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -39,7 +39,16 @@ public class Subscription {
     @Enumerated(EnumType.STRING)
     private BillingType billingType;
 
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
+    @PrePersist
+    void beforePersist(){
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    void beforeUpdate(){
+        this.updatedAt = LocalDateTime.now();
+    }
 }
