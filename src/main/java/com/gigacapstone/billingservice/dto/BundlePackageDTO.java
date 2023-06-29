@@ -13,7 +13,7 @@ public class BundlePackageDTO {
     int vatPercentage;
     ExpirationRate expirationRate;
     CallTime callTime;
-    int downloadSpeed;
-    int uploadSpeed;
-    int dataSize;
+    double downloadSpeed;
+    double uploadSpeed;
+    double dataSize;
 }

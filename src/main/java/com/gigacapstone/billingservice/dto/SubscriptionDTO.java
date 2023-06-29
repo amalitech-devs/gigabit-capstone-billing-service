@@ -3,6 +3,7 @@ package com.gigacapstone.billingservice.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gigacapstone.billingservice.enums.BillingType;
 import com.gigacapstone.billingservice.enums.TariffType;
+import com.gigacapstone.billingservice.model.CallTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,8 @@ public class SubscriptionDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate expiryDate;
 
-    private Double downloadSpeed;
-    private Double dataSize;
-    private Double uploadSpeed;
+    private double downloadSpeed;
+    private double dataSize;
+    private double uploadSpeed;
+    private CallTime callTime;
 }
