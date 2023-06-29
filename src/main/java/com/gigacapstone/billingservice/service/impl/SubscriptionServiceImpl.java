@@ -4,23 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gigacapstone.billingservice.dto.SubscriptionDTO;
 import com.gigacapstone.billingservice.enums.BillingType;
 import com.gigacapstone.billingservice.enums.ExpirationRate;
-import com.gigacapstone.billingservice.enums.TariffType;
 import com.gigacapstone.billingservice.exception.NotFoundException;
 import com.gigacapstone.billingservice.exception.OperationFailedException;
 import com.gigacapstone.billingservice.model.Subscription;
 import com.gigacapstone.billingservice.model.TariffPlan;
-import com.gigacapstone.billingservice.repository.*;
+import com.gigacapstone.billingservice.repository.BundlePackageRepository;
+import com.gigacapstone.billingservice.repository.InternetTariffPlanRepository;
+import com.gigacapstone.billingservice.repository.SubscriptionRepository;
+import com.gigacapstone.billingservice.repository.VoicePackageRepository;
 import com.gigacapstone.billingservice.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -52,12 +50,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     @Override
-    public List<SubscriptionDTO> getAllSubscriptionsOfUser(UUID userId, Pageable pageable) {
+    public Page<SubscriptionDTO> getAllSubscriptionsOfUser(UUID userId, Pageable pageable) {
         Page<Subscription> subscriptions = subscriptionRepository.findAllByUserId(userId, pageable);
         setStatusOfSubscriptions(subscriptions);
-        return subscriptions.stream()
-                .map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class))
-                .toList();
+        return subscriptions.map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class));
     }
 
     @Override
