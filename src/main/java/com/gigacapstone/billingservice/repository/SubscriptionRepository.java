@@ -13,6 +13,6 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, UUID
 
     Page<Subscription> findAllByUserId(UUID userId, Pageable pageable);
 
-    @Query("SELECT s FROM Subscription s WHERE s.userId = :id AND s.tariffName = :tariffName")
+    @Query("SELECT s FROM Subscription s WHERE s.userId = :id AND LOWER(s.tariffName) LIKE %:tariffName%")
     Page<Subscription> searchForUserSubscription(UUID id, String tariffName, Pageable pageable);
 }

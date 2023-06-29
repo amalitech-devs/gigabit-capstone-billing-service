@@ -77,6 +77,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Page<SubscriptionDTO> searchSubscriptionsByName(UUID id, String name, Pageable pageable) {
+        name = name.toLowerCase();
         Page<SubscriptionDTO> pageOfSubscriptions = subscriptionRepository.searchForUserSubscription(id, name, pageable)
                 .map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class));
 
