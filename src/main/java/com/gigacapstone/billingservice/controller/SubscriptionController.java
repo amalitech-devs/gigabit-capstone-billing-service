@@ -22,9 +22,9 @@ public class SubscriptionController {
     private final SubscriptionService subscriptionService;
 
     @GetMapping("/{userId}")
-    ResponseEntity<List<SubscriptionDTO>> getAllSubscriptionForUser(@PathVariable UUID userId, @RequestParam("type")Optional<String> type, Pageable pageable){
+    ResponseEntity<Page<SubscriptionDTO>> getAllSubscriptionForUser(@PathVariable UUID userId, @RequestParam("type")Optional<String> type, Pageable pageable){
         return ResponseEntity
-                .ok(subscriptionService.getAllSubscriptionsOfUser(userId,type, pageable));
+                .ok(subscriptionService.getAllSubscriptionsOfUser(userId, pageable));
     }
 
     @PostMapping
