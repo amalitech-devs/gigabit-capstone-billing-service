@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.gigacapstone.billingservice.enums.BillingType;
 import com.gigacapstone.billingservice.enums.TariffType;
 import com.gigacapstone.billingservice.model.CallTime;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,11 @@ public class SubscriptionDTO {
     private String tariffName;
     private String status;
     private UUID userId;
+
+    @NotNull(message = "tariff type is required")
     private TariffType type;
+
+    @NotNull(message = "billing type is required. (ONE_TIME or AUTO_RENEWAL)")
     private BillingType billingType;
     private Timestamp createdAt;
     private Timestamp updatedAt;
