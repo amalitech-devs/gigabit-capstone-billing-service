@@ -111,9 +111,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             if (subscription.getExpiryDate().isBefore(LocalDate.now())) {
                 subscription.setStatus(EXPIRED_STATUS);
                 subscriptionRepository.save(subscription);
-                continue;
             }
-            subscription.setStatus(CURRENT_STATUS);
         }
     }
 
