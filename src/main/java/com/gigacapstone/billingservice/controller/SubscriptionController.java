@@ -41,4 +41,9 @@ public class SubscriptionController {
     void cancelSubscription(@PathVariable UUID id){
         subscriptionService.cancelSubscription(id);
     }
+
+    @GetMapping("/search")
+    ResponseEntity<Page<SubscriptionDTO>> searchUserSubscriptions(@RequestParam UUID id, @RequestParam String name, Pageable pageable){
+        return ResponseEntity.ok(subscriptionService.searchSubscriptionsByName(id, name, pageable));
+    }
 }
