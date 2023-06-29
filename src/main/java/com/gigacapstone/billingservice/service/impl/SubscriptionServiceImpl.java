@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gigacapstone.billingservice.dto.SubscriptionDTO;
 import com.gigacapstone.billingservice.enums.BillingType;
 import com.gigacapstone.billingservice.enums.ExpirationRate;
+import com.gigacapstone.billingservice.enums.TariffType;
 import com.gigacapstone.billingservice.exception.NotFoundException;
 import com.gigacapstone.billingservice.exception.OperationFailedException;
-import com.gigacapstone.billingservice.model.Subscription;
-import com.gigacapstone.billingservice.model.TariffPlan;
+import com.gigacapstone.billingservice.model.*;
 import com.gigacapstone.billingservice.repository.BundlePackageRepository;
 import com.gigacapstone.billingservice.repository.InternetTariffPlanRepository;
 import com.gigacapstone.billingservice.repository.SubscriptionRepository;
@@ -28,6 +28,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final BundlePackageRepository bundlePackageRepository;
     private final VoicePackageRepository voicePackageRepository;
+    private final InternetTariffPlanRepository internetPackageRepository;
     private final InternetTariffPlanRepository tariffPlanRepository;
     private final ObjectMapper mapper;
 
@@ -53,18 +54,22 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public Page<SubscriptionDTO> getAllSubscriptionsOfUser(UUID userId, Pageable pageable) {
         Page<Subscription> subscriptions = subscriptionRepository.findAllByUserId(userId, pageable);
         setStatusOfSubscriptions(subscriptions);
-        return subscriptions.map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class));
+        Page<SubscriptionDTO> pageOfSubscriptions = subscriptions.map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class));
+
+        for (SubscriptionDTO subscription : pageOfSubscriptions) {
+            attachTariffDetailsToSubscription(subscription);
+        }
+        return pageOfSubscriptions;
     }
 
     @Override
     public void cancelSubscription(UUID id) {
         Subscription subscription = subscriptionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Subscription not found"));
-        if(subscription.getBillingType() == BillingType.AUTO_RENEWAL && LocalDate.now().isBefore(subscription.getExpiryDate())){
+        if (subscription.getBillingType() == BillingType.AUTO_RENEWAL && LocalDate.now().isBefore(subscription.getExpiryDate())) {
             subscription.setStatus(CANCELLED_STATUS);
             subscriptionRepository.save(subscription);
-        }
-        else{
+        } else {
             throw new OperationFailedException("failed to cancel subscription");
         }
 
@@ -72,8 +77,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Page<SubscriptionDTO> searchSubscriptionsByName(UUID id, String name, Pageable pageable) {
-        return subscriptionRepository.searchForUserSubscription(id, name, pageable)
+        Page<SubscriptionDTO> pageOfSubscriptions = subscriptionRepository.searchForUserSubscription(id, name, pageable)
                 .map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class));
+
+        for (SubscriptionDTO subscription : pageOfSubscriptions) {
+            attachTariffDetailsToSubscription(subscription);
+        }
+        return pageOfSubscriptions;
     }
 
     @Override
@@ -81,7 +91,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscriptionRepository.deleteById(id);
     }
 
-    private LocalDate getExpiryDate (ExpirationRate expirationRate){
+    private LocalDate getExpiryDate(ExpirationRate expirationRate) {
         LocalDate currentDate = LocalDate.now();
         return switch (expirationRate) {
             case ONE_WEEK -> currentDate.plusWeeks(1);
@@ -93,7 +103,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     }
 
-    private void setStatusOfSubscriptions (Page<Subscription> subscriptions) {
+    private void setStatusOfSubscriptions(Page<Subscription> subscriptions) {
         for (Subscription subscription : subscriptions) {
             if (subscription.getExpiryDate().isBefore(LocalDate.now())) {
                 subscription.setStatus(EXPIRED_STATUS);
@@ -104,7 +114,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         }
     }
 
-    private TariffPlan getTariffPlan (SubscriptionDTO subscriptionDTO){
+    private TariffPlan getTariffPlan(SubscriptionDTO subscriptionDTO) {
         String tariffName = subscriptionDTO.getTariffName();
         return switch (subscriptionDTO.getType()) {
             case VOICE -> voicePackageRepository.findVoicePackageByName(tariffName)
@@ -115,5 +125,32 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                     .orElseThrow(() -> new NotFoundException("No internet package found with the name: " + tariffName))
                     .getTariffPlan();
         };
+    }
+
+    private void attachTariffDetailsToSubscription(SubscriptionDTO subscriptionDTO) {
+
+        switch (subscriptionDTO.getType()) {
+            case BUNDLE -> {
+                BundlePackage bundlePackage = bundlePackageRepository.findBundlePackageByName(subscriptionDTO.getTariffName())
+                        .orElseThrow(() -> new NotFoundException("No bundle package found"));
+                subscriptionDTO.setDataSize(bundlePackage.getDataSize());
+                subscriptionDTO.setDownloadSpeed(bundlePackage.getDownloadSpeed());
+                subscriptionDTO.setUploadSpeed(bundlePackage.getUploadSpeed());
+                subscriptionDTO.setCallTime(bundlePackage.getCallTime());
+            }
+            case INTERNET -> {
+                InternetPackage internetPackage = internetPackageRepository.findByTariffPlanName(subscriptionDTO.getTariffName())
+                        .orElseThrow(() -> new NotFoundException("No internet package found"));
+
+                subscriptionDTO.setDataSize(internetPackage.getDataSize());
+                subscriptionDTO.setDownloadSpeed(internetPackage.getDownloadSpeed());
+                subscriptionDTO.setUploadSpeed(internetPackage.getUploadSpeed());
+            }
+            case VOICE -> {
+                VoicePackage voicePackage = voicePackageRepository.findVoicePackageByName(subscriptionDTO.getTariffName())
+                        .orElseThrow(() -> new NotFoundException("No voice package found"));
+                subscriptionDTO.setCallTime(voicePackage.getCallTime());
+            }
+        }
     }
 }

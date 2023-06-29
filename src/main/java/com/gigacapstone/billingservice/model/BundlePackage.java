@@ -9,11 +9,11 @@ import lombok.Setter;
 @Setter
 public class BundlePackage extends TariffPlan{
 
-    private int dataSize;
+    private double dataSize;
 
-    private int downloadSpeed;
+    private double downloadSpeed;
 
-    private int uploadSpeed;
+    private double uploadSpeed;
 
     private CallTime callTime;
 }
