@@ -54,7 +54,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Page<SubscriptionDTO> getAllSubscriptionsOfUser(UUID userId, Pageable pageable) {
-        Page<Subscription> subscriptions = subscriptionRepository.findAllByUserId(userId, pageable);
+        Page<Subscription> subscriptions = subscriptionRepository.findSubscriptionsByUserId( userId, pageable);
         setStatusOfSubscriptions(subscriptions);
         Page<SubscriptionDTO> pageOfSubscriptions = subscriptions.map(subscription -> mapper.convertValue(subscription, SubscriptionDTO.class));
 
@@ -111,9 +111,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             if (subscription.getExpiryDate().isBefore(LocalDate.now())) {
                 subscription.setStatus(EXPIRED_STATUS);
                 subscriptionRepository.save(subscription);
-                continue;
             }
-            subscription.setStatus(CURRENT_STATUS);
         }
     }
 
