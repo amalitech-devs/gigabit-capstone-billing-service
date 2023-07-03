@@ -135,6 +135,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 subscriptionDTO.setDownloadSpeed(bundlePackage.getDownloadSpeed());
                 subscriptionDTO.setUploadSpeed(bundlePackage.getUploadSpeed());
                 subscriptionDTO.setCallTime(bundlePackage.getCallTime());
+                subscriptionDTO.setPrice(bundlePackage.getPrice());
             }
             case INTERNET -> {
                 InternetPackage internetPackage = internetPackageRepository.findByTariffPlanName(subscriptionDTO.getTariffName())
@@ -148,6 +149,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 VoicePackage voicePackage = voicePackageRepository.findVoicePackageByName(subscriptionDTO.getTariffName())
                         .orElseThrow(() -> new NotFoundException("No voice package found"));
                 subscriptionDTO.setCallTime(voicePackage.getCallTime());
+                subscriptionDTO.setPrice(voicePackage.getPrice());
             }
         }
     }

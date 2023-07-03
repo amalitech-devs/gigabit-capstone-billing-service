@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -38,4 +37,5 @@ public class SubscriptionDTO {
     private double dataSize;
     private double uploadSpeed;
     private CallTime callTime;
+    private double price;
 }
