@@ -238,4 +238,24 @@ class TariffServiceImplTest {
         assertEquals(1, result.getBundlePackages().size());
         assertEquals(0 ,result.getInternetPackages().size());
     }
+
+    @Test
+    void searchVoicePackageByNameSuccess(){
+        String voicePackageName = "Sika Kasa";
+        Pageable pageable = Pageable.unpaged();
+
+        VoicePackage voicePackage = new VoicePackage();
+        voicePackage.setName(voicePackageName);
+
+        Page<VoicePackage> pageOfVoicePackage = new PageImpl<>(List.of(voicePackage));
+
+        when(tariffRepository.searchVoicePackages(anyString(), eq(pageable))).thenReturn(pageOfVoicePackage);
+
+        Page<VoicePackageDTO> result = tariffService.searchVoicePackage(voicePackageName, pageable);
+
+        assertNotNull(result);
+        assertEquals(pageOfVoicePackage.getSize(), result.getSize());
+
+        verify(tariffRepository, times(1)).searchVoicePackages(anyString(), eq(pageable));
+    }
 }
