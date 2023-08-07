@@ -28,3 +28,7 @@ springdoc:
   enable-native-support: true
   swagger-ui:
     path: /swagger-ui
+logging:
+  file:
+    path: .
+
