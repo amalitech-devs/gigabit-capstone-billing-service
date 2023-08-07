@@ -258,4 +258,58 @@ class TariffServiceImplTest {
 
         verify(tariffRepository, times(1)).searchVoicePackages(anyString(), eq(pageable));
     }
+
+    @Test
+    void searchVoicePackageByNameEmptyPage(){
+        String voicePackageName = "Sika Kasa";
+        Pageable pageable = Pageable.unpaged();
+
+        Page<VoicePackage> emptyPageOfVoicePackages = new PageImpl<>(Collections.emptyList());
+
+        when(tariffRepository.searchVoicePackages(anyString(), eq(pageable))).thenReturn(emptyPageOfVoicePackages);
+
+        Page<VoicePackageDTO> result = tariffService.searchVoicePackage(voicePackageName, pageable);
+
+        assertNotNull(result);
+        assertEquals(emptyPageOfVoicePackages.getSize(), result.getSize());
+
+        verify(tariffRepository, times(1)).searchVoicePackages(anyString(), eq(pageable));
+    }
+
+    @Test
+    void searchBundlePackageByNameSuccess(){
+        String bundlePackageName = "Sika Kasa";
+        Pageable pageable = Pageable.unpaged();
+
+        BundlePackage bundlePackage = new BundlePackage();
+        bundlePackage.setName(bundlePackageName);
+
+        Page<BundlePackage> pageOfBundlePackage = new PageImpl<>(List.of(bundlePackage));
+
+        when(tariffRepository.searchBundlePackages(anyString(), eq(pageable))).thenReturn(pageOfBundlePackage);
+
+        Page<BundlePackageDTO> result = tariffService.searchBundlePackage(bundlePackageName, pageable);
+
+        assertNotNull(result);
+        assertEquals(pageOfBundlePackage.getSize(), result.getSize());
+
+        verify(tariffRepository, times(1)).searchBundlePackages(anyString(), eq(pageable));
+    }
+
+    @Test
+    void searchBundlePackageByNameEmptyPage(){
+        String voicePackageName = "Sika Kasa";
+        Pageable pageable = Pageable.unpaged();
+
+        Page<BundlePackage> emptyPageOfBundlePackages = new PageImpl<>(Collections.emptyList());
+
+        when(tariffRepository.searchBundlePackages(anyString(), eq(pageable))).thenReturn(emptyPageOfBundlePackages);
+
+        Page<BundlePackageDTO> result = tariffService.searchBundlePackage(voicePackageName, pageable);
+
+        assertNotNull(result);
+        assertEquals(emptyPageOfBundlePackages.getSize(), result.getSize());
+
+        verify(tariffRepository, times(1)).searchBundlePackages(anyString(), eq(pageable));
+    }
 }
