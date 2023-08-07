@@ -1,12 +1,15 @@
 package com.gigacapstone.billingservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gigacapstone.billingservice.dto.AllPackagesDTO;
 import com.gigacapstone.billingservice.dto.BundlePackageDTO;
 import com.gigacapstone.billingservice.dto.VoicePackageDTO;
 import com.gigacapstone.billingservice.exception.EntityAlreadyExistException;
 import com.gigacapstone.billingservice.model.BundlePackage;
+import com.gigacapstone.billingservice.model.InternetPackage;
 import com.gigacapstone.billingservice.model.VoicePackage;
 import com.gigacapstone.billingservice.repository.BundlePackageRepository;
+import com.gigacapstone.billingservice.repository.InternetTariffPlanRepository;
 import com.gigacapstone.billingservice.repository.TariffRepository;
 import com.gigacapstone.billingservice.repository.VoicePackageRepository;
 import org.junit.jupiter.api.Assertions;
@@ -20,6 +23,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +41,9 @@ class TariffServiceImplTest {
 
     @Mock
     private BundlePackageRepository bundlePackageRepository;
+
+    @Mock
+    private InternetTariffPlanRepository internetPackageRepository;
 
     @Mock
     private ObjectMapper mapper;
@@ -203,5 +210,32 @@ class TariffServiceImplTest {
 
         assertNotNull(result);
         assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void listAllPackages_success(){
+        VoicePackage voicePackage = new VoicePackage();
+        voicePackage.setName("Voice Package");
+        BundlePackage bundlePackage = new BundlePackage();
+        bundlePackage.setName("Bundle Package");
+
+        VoicePackageDTO voicePackageDto = new VoicePackageDTO();
+        voicePackageDto.setName("Voice Package");
+        BundlePackageDTO bundlePackageDto = new BundlePackageDTO();
+        bundlePackageDto.setName("Bundle Package");
+
+        when(tariffRepository.findVoicePackages()).thenReturn(List.of(voicePackage));
+        when(tariffRepository.findBundlePackages()).thenReturn(List.of(bundlePackage));
+        when(internetPackageRepository.findAll()).thenReturn(Collections.emptyList());
+
+        when(mapper.convertValue(any(), eq(VoicePackageDTO.class))).thenReturn(voicePackageDto);
+        when(mapper.convertValue(any(), eq(BundlePackageDTO.class))).thenReturn(bundlePackageDto);
+
+        AllPackagesDTO result = tariffService.listAllPackages();
+
+        assertNotNull(result);
+        assertEquals(1, result.getVoicePackages().size());
+        assertEquals(1, result.getBundlePackages().size());
+        assertEquals(0 ,result.getInternetPackages().size());
     }
 }
