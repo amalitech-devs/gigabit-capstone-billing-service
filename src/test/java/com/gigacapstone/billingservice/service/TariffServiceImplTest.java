@@ -165,4 +165,31 @@ class TariffServiceImplTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    void listAllVoicePackages_success(){
+        VoicePackage package1 = new VoicePackage();
+        package1.setName("Package 1");
+        VoicePackage package2 = new VoicePackage();
+        package2.setName("Package 2");
+
+        List<VoicePackage> bundles = List.of(package1, package2);
+        VoicePackageDTO voicePackageDto1 = new VoicePackageDTO();
+        voicePackageDto1.setName("Package 1");
+
+        VoicePackageDTO voicePackageDto2 = new VoicePackageDTO();
+        voicePackageDto2.setName("Package 2");
+
+        Page<VoicePackage> pageOfBundles = new PageImpl<>(bundles);
+
+        when(voicePackageRepository.findAll(any(Pageable.class))).thenReturn(pageOfBundles);
+        when(mapper.convertValue(any(VoicePackage.class), eq(VoicePackageDTO.class))).thenReturn(voicePackageDto1, voicePackageDto2);
+
+        Page<VoicePackageDTO> result = tariffService.listAllVoicePackages(PageRequest.of(0, 10));
+
+        assertNotNull(result);
+        assertEquals(2, result.getSize());
+
+        verify(voicePackageRepository, times(1)).findAll(any(Pageable.class));
+    }
 }
