@@ -15,10 +15,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -120,5 +125,44 @@ class TariffServiceImplTest {
         });
         verify(bundlePackageRepository, times(1)).findBundlePackageByName(anyString());
         verify(tariffRepository, never()).save(any(BundlePackage.class));
+    }
+
+    @Test
+    void listAllBundlePackages_success(){
+        BundlePackage package1 = new BundlePackage();
+        package1.setName("Package 1");
+        BundlePackage package2 = new BundlePackage();
+        package2.setName("Package 2");
+
+        List<BundlePackage> bundles = List.of(package1, package2);
+        BundlePackageDTO bundlePackageDTO1 = new BundlePackageDTO();
+        bundlePackageDTO1.setName("Package 1");
+
+        BundlePackageDTO bundlePackageDTO2 = new BundlePackageDTO();
+        bundlePackageDTO2.setName("Package 2");
+
+        Page<BundlePackage> pageOfBundles = new PageImpl<>(bundles);
+
+        when(bundlePackageRepository.findAll(any(Pageable.class))).thenReturn(pageOfBundles);
+        when(mapper.convertValue(any(BundlePackage.class), eq(BundlePackageDTO.class))).thenReturn(bundlePackageDTO1, bundlePackageDTO2);
+
+        Page<BundlePackageDTO> result = tariffService.listAllBundlePackages(PageRequest.of(0, 10));
+
+        assertNotNull(result);
+        assertEquals(2, result.getSize());
+
+        verify(bundlePackageRepository, times(1)).findAll(any(Pageable.class));
+    }
+
+    @Test
+    void listAllBundlePackages_empty(){
+        Pageable pageable = Pageable.unpaged();
+
+        when(bundlePackageRepository.findAll(any(Pageable.class))).thenReturn(Page.empty());
+
+        Page<BundlePackageDTO> result = tariffService.listAllBundlePackages(pageable);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 }
