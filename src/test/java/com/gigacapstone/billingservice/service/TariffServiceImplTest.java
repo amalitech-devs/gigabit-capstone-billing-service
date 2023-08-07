@@ -192,4 +192,16 @@ class TariffServiceImplTest {
 
         verify(voicePackageRepository, times(1)).findAll(any(Pageable.class));
     }
+
+    @Test
+    void listAllVoicePackages_empty(){
+        Pageable pageable = Pageable.unpaged();
+
+        when(voicePackageRepository.findAll(any(Pageable.class))).thenReturn(Page.empty());
+
+        Page<VoicePackageDTO> result = tariffService.listAllVoicePackages(pageable);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
 }
