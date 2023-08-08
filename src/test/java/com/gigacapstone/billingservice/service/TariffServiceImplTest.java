@@ -6,7 +6,6 @@ import com.gigacapstone.billingservice.dto.BundlePackageDTO;
 import com.gigacapstone.billingservice.dto.VoicePackageDTO;
 import com.gigacapstone.billingservice.exception.EntityAlreadyExistException;
 import com.gigacapstone.billingservice.model.BundlePackage;
-import com.gigacapstone.billingservice.model.InternetPackage;
 import com.gigacapstone.billingservice.model.VoicePackage;
 import com.gigacapstone.billingservice.repository.BundlePackageRepository;
 import com.gigacapstone.billingservice.repository.InternetTariffPlanRepository;
