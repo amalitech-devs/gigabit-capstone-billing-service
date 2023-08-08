@@ -5,6 +5,7 @@ import com.gigacapstone.billingservice.dto.VoicePackageDTO;
 import com.gigacapstone.billingservice.enums.ExpirationRate;
 import com.gigacapstone.billingservice.enums.TimeUnit;
 import com.gigacapstone.billingservice.model.CallTime;
+import org.h2.mvstore.Page;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,16 +76,14 @@ class BillingServiceIntegrationTest {
         bundlePackageDTO.setDownloadSpeed(12.0);
         bundlePackageDTO.setUploadSpeed(10.0);
 
-        BundlePackageDTO result = webClient.post()
+        BundlePackageDTO response = webClient.post()
                 .uri(baseUrl.concat("/bundle"))
                 .body(BodyInserters.fromValue(bundlePackageDTO))
                 .retrieve()
                 .bodyToMono(BundlePackageDTO.class)
                 .block();
 
-        assertNotNull(result);
-        assertEquals(bundlePackageDTO.getName(), result.getName());
+        assertNotNull(response);
+        assertEquals(bundlePackageDTO.getName(), response.getName());
     }
-
-
 }
