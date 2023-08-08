@@ -1,6 +1,7 @@
 package com.gigacapstone.billingservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gigacapstone.billingservice.dto.BundlePackageDTO;
 import com.gigacapstone.billingservice.dto.VoicePackageDTO;
 import com.gigacapstone.billingservice.enums.ExpirationRate;
 import com.gigacapstone.billingservice.enums.TimeUnit;
@@ -46,6 +47,27 @@ class TariffPlanControllerIntegrationTest {
                 .content(asJsonString(voicePackageDTO))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
+    }
+
+    @Test
+    void createBundlePackage() throws Exception {
+        BundlePackageDTO bundlePackageDTO = new BundlePackageDTO();
+        bundlePackageDTO.setName("Test Name");
+        bundlePackageDTO.setPrice(12.0);
+        bundlePackageDTO.setCallTime(new CallTime(TimeUnit.HOURS,2));
+        bundlePackageDTO.setVatPercentage(15);
+        bundlePackageDTO.setIsVatApplied(true);
+        bundlePackageDTO.setExpirationRate(ExpirationRate.ONE_WEEK);
+        bundlePackageDTO.setDataSize(100);
+        bundlePackageDTO.setDownloadSpeed(12.0);
+        bundlePackageDTO.setUploadSpeed(10.0);
+
+        mockMvc.perform(MockMvcRequestBuilders.post(baseUrl.concat("/bundle"))
+                .content(asJsonString(bundlePackageDTO))
+                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                .accept(org.springframework.http.MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
     }
