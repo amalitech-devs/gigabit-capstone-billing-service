@@ -7,10 +7,12 @@ import com.gigacapstone.billingservice.enums.ExpirationRate;
 import com.gigacapstone.billingservice.enums.TimeUnit;
 import com.gigacapstone.billingservice.model.CallTime;
 import jakarta.ws.rs.core.MediaType;
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,7 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class TariffPlanControllerIntegrationTest {
@@ -26,7 +28,8 @@ class TariffPlanControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static final int port = 8088;
+    @LocalServerPort
+    private static int port;
     private static final String baseUrl = "http://localhost"
             .concat(":")
             .concat(String.valueOf(port))
@@ -69,6 +72,14 @@ class TariffPlanControllerIntegrationTest {
                 .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
                 .accept(org.springframework.http.MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
+    }
+
+    @Test
+    void getVoicePackages() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl.concat("/voice"))
+                .accept(org.springframework.http.MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").exists());
     }
 
