@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -133,6 +134,15 @@ class TariffPlanControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[*].name").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content", hasSize(2)));
+    }
+    @Test
+    void getBundlePackages() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl.concat("/bundle"))
+                        .accept(org.springframework.http.MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[*].name").exists())
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].name").value("Test Bundle"));
     }
 
     private static String asJsonString(final Object object) {
