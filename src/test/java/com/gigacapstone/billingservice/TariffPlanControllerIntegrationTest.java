@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.hasValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -160,13 +161,26 @@ class TariffPlanControllerIntegrationTest {
     @Test
     void searchVoicePackages() throws Exception{
         String requestParam = "name";
-        String paramValue = "Test";
+        String paramValue = "test";
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl.concat("/voice/search"))
                 .accept(org.springframework.http.MediaType.APPLICATION_JSON)
                 .param(requestParam, paramValue))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(2)));
+    }
+
+    @Test
+    void searchBundlePackages() throws Exception{
+        String requestParam = "name";
+        String paramValue = "test";
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl.concat("/bundle/search"))
+                        .accept(org.springframework.http.MediaType.APPLICATION_JSON)
+                        .param(requestParam, paramValue))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content", hasSize(1)))
+                .andExpect(jsonPath("$.content[0].name").value("Test Bundle"));
     }
 
     private static String asJsonString(final Object object) {
