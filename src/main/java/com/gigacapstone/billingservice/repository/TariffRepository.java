@@ -19,7 +19,7 @@ public interface TariffRepository extends JpaRepository<TariffPlan, Integer> {
     @Query("SELECT vp FROM VoicePackage vp")
     List<VoicePackage> findVoicePackages();
 
-    @Query("SELECT vp FROM VoicePackage vp WHERE vp.name LIKE  %:packageName%")
+    @Query("SELECT vp FROM VoicePackage vp WHERE LOWER(vp.name) LIKE  %:packageName%")
     Page<VoicePackage> searchVoicePackages(String packageName, Pageable pageable);
 
     @Query("SELECT bp FROM BundlePackage bp WHERE bp.name LIKE  %:packageName%")

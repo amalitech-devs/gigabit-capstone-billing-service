@@ -115,7 +115,7 @@ public class TariffServiceImpl implements TariffService {
 
     @Override
     public Page<VoicePackageDTO> searchVoicePackage(String packageName, Pageable pageable) {
-        Page<VoicePackage> voicePackages = tariffRepository.searchVoicePackages(packageName, pageable);
+        Page<VoicePackage> voicePackages = tariffRepository.searchVoicePackages(packageName.toLowerCase(), pageable);
         return voicePackages.map(voicePackage -> mapper.convertValue(voicePackage, VoicePackageDTO.class));
     }
 
