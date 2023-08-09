@@ -135,6 +135,17 @@ class TariffPlanControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content[*].name").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content", hasSize(2)));
     }
+
+    @Test
+    void getAllPackages() throws Exception{
+        mockMvc.perform(MockMvcRequestBuilders.get(baseUrl.concat("/all"))
+                .accept(org.springframework.http.MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.voicePackages", hasSize(2)))
+                .andExpect(jsonPath("$.bundlePackages", hasSize(1)))
+                .andExpect(jsonPath("$.internetPackages", hasSize(0)));
+    }
+
     @Test
     void getBundlePackages() throws Exception{
         mockMvc.perform(MockMvcRequestBuilders.get(baseUrl.concat("/bundle"))
