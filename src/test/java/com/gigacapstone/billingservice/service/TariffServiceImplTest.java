@@ -248,14 +248,14 @@ class TariffServiceImplTest {
 
         Page<VoicePackage> pageOfVoicePackage = new PageImpl<>(List.of(voicePackage));
 
-        when(tariffRepository.searchVoicePackages(anyString(), eq(pageable))).thenReturn(pageOfVoicePackage);
+        when(tariffRepository.searchVoicePackagesIgnoreCase(anyString(), eq(pageable))).thenReturn(pageOfVoicePackage);
 
         Page<VoicePackageDTO> result = tariffService.searchVoicePackage(voicePackageName, pageable);
 
         assertNotNull(result);
         assertEquals(pageOfVoicePackage.getSize(), result.getSize());
 
-        verify(tariffRepository, times(1)).searchVoicePackages(anyString(), eq(pageable));
+        verify(tariffRepository, times(1)).searchVoicePackagesIgnoreCase(anyString(), eq(pageable));
     }
 
     @Test
@@ -265,14 +265,14 @@ class TariffServiceImplTest {
 
         Page<VoicePackage> emptyPageOfVoicePackages = new PageImpl<>(Collections.emptyList());
 
-        when(tariffRepository.searchVoicePackages(anyString(), eq(pageable))).thenReturn(emptyPageOfVoicePackages);
+        when(tariffRepository.searchVoicePackagesIgnoreCase(anyString(), eq(pageable))).thenReturn(emptyPageOfVoicePackages);
 
         Page<VoicePackageDTO> result = tariffService.searchVoicePackage(voicePackageName, pageable);
 
         assertNotNull(result);
         assertEquals(emptyPageOfVoicePackages.getSize(), result.getSize());
 
-        verify(tariffRepository, times(1)).searchVoicePackages(anyString(), eq(pageable));
+        verify(tariffRepository, times(1)).searchVoicePackagesIgnoreCase(anyString(), eq(pageable));
     }
 
     @Test
@@ -285,14 +285,14 @@ class TariffServiceImplTest {
 
         Page<BundlePackage> pageOfBundlePackage = new PageImpl<>(List.of(bundlePackage));
 
-        when(tariffRepository.searchBundlePackages(anyString(), eq(pageable))).thenReturn(pageOfBundlePackage);
+        when(tariffRepository.searchBundlePackagesIgnoreCase(anyString(), eq(pageable))).thenReturn(pageOfBundlePackage);
 
         Page<BundlePackageDTO> result = tariffService.searchBundlePackage(bundlePackageName, pageable);
 
         assertNotNull(result);
         assertEquals(pageOfBundlePackage.getSize(), result.getSize());
 
-        verify(tariffRepository, times(1)).searchBundlePackages(anyString(), eq(pageable));
+        verify(tariffRepository, times(1)).searchBundlePackagesIgnoreCase(anyString(), eq(pageable));
     }
 
     @Test
@@ -302,13 +302,13 @@ class TariffServiceImplTest {
 
         Page<BundlePackage> emptyPageOfBundlePackages = new PageImpl<>(Collections.emptyList());
 
-        when(tariffRepository.searchBundlePackages(anyString(), eq(pageable))).thenReturn(emptyPageOfBundlePackages);
+        when(tariffRepository.searchBundlePackagesIgnoreCase(anyString(), eq(pageable))).thenReturn(emptyPageOfBundlePackages);
 
         Page<BundlePackageDTO> result = tariffService.searchBundlePackage(voicePackageName, pageable);
 
         assertNotNull(result);
         assertEquals(emptyPageOfBundlePackages.getSize(), result.getSize());
 
-        verify(tariffRepository, times(1)).searchBundlePackages(anyString(), eq(pageable));
+        verify(tariffRepository, times(1)).searchBundlePackagesIgnoreCase(anyString(), eq(pageable));
     }
 }
