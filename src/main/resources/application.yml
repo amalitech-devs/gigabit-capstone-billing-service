@@ -31,4 +31,12 @@ springdoc:
 logging:
   file:
     path: .
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
 

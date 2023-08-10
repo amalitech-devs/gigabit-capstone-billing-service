@@ -5,11 +5,15 @@ import com.gigacapstone.billingservice.dto.VoicePackageDTO;
 import com.gigacapstone.billingservice.enums.ExpirationRate;
 import com.gigacapstone.billingservice.enums.TimeUnit;
 import com.gigacapstone.billingservice.model.CallTime;
+import com.gigacapstone.billingservice.model.VoicePackage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -50,7 +54,6 @@ class BillingServiceIntegrationTest {
         voicePackageDTO.setExpirationRate(ExpirationRate.TWO_WEEKS);
         voicePackageDTO.setCallTime(new CallTime(TimeUnit.MINUTES, 20));
 
-        //Add the body this is a post request
         VoicePackageDTO voicePackage = webClient.post()
                 .uri(baseUrl.concat("/voice"))
                 .body(BodyInserters.fromValue(voicePackageDTO))
@@ -84,6 +87,5 @@ class BillingServiceIntegrationTest {
 
         assertNotNull(response);
         assertEquals(bundlePackageDTO.getName(), response.getName());
-        
     }
 }
