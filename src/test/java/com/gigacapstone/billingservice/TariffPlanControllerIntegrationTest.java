@@ -11,6 +11,7 @@ import com.gigacapstone.billingservice.model.VoicePackage;
 import com.gigacapstone.billingservice.repository.BundlePackageRepository;
 import com.gigacapstone.billingservice.repository.VoicePackageRepository;
 import jakarta.ws.rs.core.MediaType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.hasValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -89,10 +89,16 @@ class TariffPlanControllerIntegrationTest {
         bundlePackageRepository.save(bundlePackage);
     }
 
+    @AfterEach
+    void cleanup(){
+        voicePackageRepository.deleteAll();
+        bundlePackageRepository.deleteAll();
+    }
+
     @Test
     void createVoicePackage() throws Exception {
         VoicePackageDTO voicePackageDTO = new VoicePackageDTO();
-        voicePackageDTO.setName("Test Name");
+        voicePackageDTO.setName("Test Package");
         voicePackageDTO.setPrice(2.0);
         voicePackageDTO.setIsEnabled(false);
         voicePackageDTO.setIsVatApplied(true);
